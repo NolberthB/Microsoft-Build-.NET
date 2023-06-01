@@ -258,7 +258,6 @@ Si la ha creado correctamente, enhorabuena. Continúe en la unidad siguiente par
 
 El objetivo era escribir código que mostrara mensajes simples en una consola de salida mientras se familiarizaba con la sintaxis. Ha escrito las primeras líneas de código con la sintaxis básica de C#. Se han identificado dos técnicas para mostrar datos de cadena literales en la consola. Hemos aprendido qué debemos buscar cuando se detecta un error en el código. Y, finalmente, ha identificado los elementos de la sintaxis de C#, como clases y métodos, y el propósito de varios símbolos especiales conocidos como operadores. Ha realizado los primeros pasos para crear aplicaciones más sofisticadas.
 
-
 ## Introducción al desarrollo web mediante Visual Studio Code.
 
 Para empezar a trabajar con el desarrollo web, cree un proyecto web sencillo en Visual Studio Code que contenga una página web, un archivo CSS y un archivo JavaScript. Vea cómo usar herramientas de desarrollo en el explorador para comprobar su trabajo.
@@ -701,7 +700,6 @@ Para agregar compatibilidad con un tema oscuro para su CSS, siga estos pasos.
 
 En la unidad siguiente, usará JavaScript para proporcionar interactividad y permitir cambiar los temas.
 
-
 ### Ejercicio: Adición de interactividad con JavaScript
 
 JavaScript (o  *ECMAScript* ) es un lenguaje de programación que le ayuda a agregar interactividad a las páginas web.
@@ -951,39 +949,575 @@ Está recopilando herramientas y construyendo los cimientos para su labor como d
 
 ### Referencias de desarrollo web
 
-#### HTML5
+### HTML5
 
 * [W3C: historia de HTML](https://www.w3.org/TR/html52/introduction.html#introduction-history)
 * [Webhint - Use charset &#39;Utf-8&#39;](https://webhint.io/docs/user-guide/hints/hint-meta-charset-utf-8/) (Webhint: Uso de charset "Utf-8")
 * [Documentación web de MDN: ¿Qué hay en la cabecera?](https://developer.mozilla.org/docs/Learn/HTML/Introduction_to_HTML/The_head_metadata_in_HTML)
 * [Documentos web MDN: referencia de elementos HTML](https://developer.mozilla.org/docs/Web/HTML/Element)
 
-#### CSS
+### CSS
 
 * [Documentos web MDN: CSS: Hojas de estilo CSS](https://developer.mozilla.org/docs/Web/CSS)
 
-#### JavaScript
+### JavaScript
 
 * [Documentación web de MDN: Modo strict](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Strict_mode)
 * [Documentos web MDN: referencia de JavaScript](https://developer.mozilla.org/docs/Web/JavaScript/Reference)
 
 ### Tecnologías de desarrollo web
 
-#### Documentación de Microsoft Edge
+### Documentación de Microsoft Edge
 
 * [Herramientas de desarrollo de Microsoft Edge](https://learn.microsoft.com/es-es/microsoft-edge/devtools-guide-chromium/landing/)
 * [Inspección, edición y depuración de HTML y CSS con la herramienta Elementos](https://learn.microsoft.com/es-es/microsoft-edge/devtools-guide-chromium/elements-tool/elements-tool)
 * [Información general sobre la consola](https://learn.microsoft.com/es-es/microsoft-edge/devtools-guide-chromium/console/)
 
-#### Azure Static Web Apps
+### Azure Static Web Apps
 
 Una manera de implementar el sitio web es usar Azure Static Web Apps.
 
 * [Rutas de aprendizaje de Azure Static Web Apps](https://learn.microsoft.com/es-es/training/paths/azure-static-web-apps/)
 * [Documentación de Azure Static Web Apps](https://learn.microsoft.com/es-es/azure/static-web-apps)
 
-#### Documentación de Visual Studio Code
+### Documentación de Visual Studio Code
 
 * [Interfaz de usuario](https://code.visualstudio.com/docs/getstarted/userinterface)
 * [Emmet en Visual Studio Code](https://code.visualstudio.com/docs/editor/emmet)
-*
+
+## Los aspectos básicos de la accesibilidad web
+
+### Objetivos de aprendizaje
+
+En este módulo, aprenderá lo siguiente:
+
+* Herramientas que usan los usuarios para examinar páginas web
+* Herramientas que usan los desarrolladores para garantizar la accesibilidad
+* Aptitudes para garantizar que las páginas sean accesibles
+
+### Asegurarse de que las páginas web sean accesibles para todos los usuarios
+
+Asegurarse de que la página web sea accesible para todos los usuarios y todos los clientes es algo fundamental. Tal y como afirmó Tim Berners-Lee, creador del World Wide Web: "El poder de la Web está en su universalidad. Que cualquier persona pueda acceder, aunque tenga una discapacidad, es un aspecto esencial".
+
+Como desarrollador web con experiencia, es importante aprender a asegurarse de que las páginas sean accesibles desde el principio. Siempre es más fácil crear una página para que sea accesible que adaptarla más adelante. Si aprende estas aptitudes al principio, se convertirán en algo natural. Después puede crear páginas accesibles y detectar posibles problemas.
+
+### Navegación por la Web con más de un explorador
+
+Probablemente esté muy familiarizado con un explorador para navegar por la Web. Cuando piense en diseñar páginas web, puede imaginarse la experiencia del usuario con este explorador porque tiene experiencia personal con él. Pero no todos los usuarios usan un explorador de la misma manera, o ni siquiera usan un explorador. Para crear experiencias para todos los usuarios, debe conocer las distintas herramientas que los usuarios pueden usar al navegar por la Web.
+
+#### Lectores de pantalla
+
+Una de las herramientas de accesibilidad más conocidas es un [lector de pantalla](https://en.wikipedia.org/wiki/Screen_reader). Los lectores de pantalla son clientes que usan con frecuencia las personas con discapacidades visuales. Además, están integrados en la mayoría de los sistemas operativos. A medida que dedicamos tiempo a garantizar que un explorador transmita correctamente la información que queremos compartir, también debemos asegurarnos de que un lector de pantalla hace lo mismo.
+
+En su nivel más básico, un lector de pantalla lee en voz alta una página de arriba abajo. Si la página es todo texto, el lector transmite la información de forma similar a un explorador. Por supuesto, las páginas web rara vez incluyen simplemente texto, ya que contienen vínculos, gráficos, colores y otros componentes visuales. Hay que tener cuidado para que un lector de pantalla pueda leer correctamente esta información.
+
+Algunos exploradores también tienen herramientas y extensiones integradas que pueden leer texto en voz alta o incluso proporcionar algunas características básicas de navegación, como [estas herramientas de explorador Edge centradas en la accesibilidad](https://support.microsoft.com/help/4000734/microsoft-edge-accessibility-features). Estas herramientas de explorador también son herramientas de accesibilidad importantes, pero funcionan de forma diferente a los lectores de pantalla. No deben confundirse con las herramientas de pruebas de lectores de pantalla.
+
+ Nota:
+
+Pruebe un lector de pantalla y un lector de texto del explorador. En Windows, [Narrador](https://support.microsoft.com/windows/complete-guide-to-narrator-e4397a0d-ef4f-b386-d8ae-c172f109bdb1) se incluye de forma predeterminada. También se pueden instalar [JAWS](https://www.nvaccess.org/about-nvda/) y [NVDA](https://webaim.org/articles/jaws/) en Windows. En macOS e iOS, [VoiceOver](https://support.apple.com/guide/voiceover/welcome/10) está instalada de forma predeterminada.
+
+#### Zoom
+
+Otra herramienta que usan normalmente las personas con discapacidades visuales es el zoom. El tipo más básico de zoom es el zoom estático, que se controla mediante el método abreviado de teclado Ctrl+Signo más (+) o disminuyendo la resolución de la pantalla. Este tipo de zoom cambia el tamaño de toda la página. Es importante usar el [diseño dinámico](https://developer.mozilla.org/docs/Learn/CSS/CSS_layout/Responsive_Design), donde los elementos se mueven en función de la [ventanilla](https://developer.mozilla.org/docs/Web/CSS/Viewport_concepts), para proporcionar una buena experiencia de usuario en niveles de zoom mayores.
+
+Es probable que el sistema operativo tenga funcionalidades de zoom integradas que permitan ampliar partes de la pantalla de forma muy parecida a una lupa real. La herramienta [Lupa](https://support.microsoft.com/windows/use-magnifier-to-make-things-on-the-screen-easier-to-see-414948ba-8b1c-d3bd-8615-0e5e32204198) está integrada en Windows, aunque también se puede usar [ZoomText](https://www.freedomscientific.com/training/zoomtext/getting-started/), un complemento de asociados más completo y popular. Tanto macOS como iOS tienen una herramienta de ampliación integrada denominada [Zoom](https://www.apple.com/accessibility/mac/vision/).
+
+### Garantizar la accesibilidad con herramientas de desarrollo
+
+Probar la página web en varios clientes y vistas es tan importante como probarla en varios exploradores. Es posible que estas pruebas no sean prácticas en todos los escenarios, y se pueden pasar por alto situaciones en las que los usuarios utilizan un explorador pero que podrían tener otra discapacidad. Afortunadamente, hay herramientas que puede usar como desarrollador para medir la accesibilidad de una página.
+
+#### Herramientas de comprobación del contraste
+
+Es posible que una persona daltónica no pueda diferenciar entre colores o que tenga dificultades para trabajar con colores similares entre sí. World Wide Web Consortium (W3C), la organización de estándares para la Web, estableció un [sistema de clasificación para el contraste de colores](https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html).
+
+Elegir los colores adecuados para asegurarse de que la página sea accesible para todos puede ser difícil de conseguir manualmente. Por tanto, puede usar las siguientes herramientas para generar los colores adecuados y probar el sitio para garantizar el cumplimiento con W3C:
+
+* Herramientas de generación de paletas:
+  * [Adobe Color](https://color.adobe.com/create/color-accessibility): una herramienta interactiva para probar combinaciones de colores
+  * [Color Safe](http://colorsafe.co/): una herramienta para generar colores de texto basados en un color de fondo seleccionado
+* Herramientas de comprobación del cumplimiento:
+  * Extensiones del explorador para probar una página:
+    * [Edge: WCAG Color contrast checker](https://microsoftedge.microsoft.com/addons/detail/wcag-color-contrast-check/idahaggnlnekelhgplklhfpchbfdmkjp)
+    * [Firefox: WCAG Contrast checker](https://addons.mozilla.org/firefox/addon/wcag-contrast-checker/)
+    * [Chrome: Colour Contrast Checker](https://chrome.google.com/webstore/detail/colour-contrast-checker/nmmjeclfkgjdomacpcflgdkgpphpmnfe)
+  * Aplicaciones:
+    * [Colour Contrast Analyser (CCA)](https://www.tpgi.com/color-contrast-checker/)
+
+#### Lighthouse
+
+Lighthouse es una herramienta creada por Google para analizar sitios web. Se ha vuelto tan popular que viene incluida en las herramientas de desarrollo de muchos exploradores. Lighthouse puede examinar la optimización del motor de búsqueda (SEO) de una página, el rendimiento de la carga y otros procedimientos recomendados. Lighthouse también puede analizar una página y proporcionar una puntuación para su accesibilidad actual.
+
+ Nota
+
+Al igual que con cualquier herramienta automatizada, no puede confiar en la puntuación que Lighthouse proporciona como única indicación de la accesibilidad de una página. Pero proporciona un buen punto de partida para identificar y solucionar problemas.
+
+#### Ejercicio: Generación de la puntuación de accesibilidad de una página con Lighthouse
+
+Pruebe Lighthouse en el explorador. En las capturas de pantalla siguientes se usa [Edge](https://www.microsoft.com/edge), pero puede seguir los mismos pasos en Chrome y muchos otros exploradores.
+
+1. Abra el explorador y vaya a la [página web principal de Microsoft](https://microsoft.com/).
+2. Presione la tecla F12 para abrir las herramientas de desarrollo.
+3. En la parte superior, seleccione el botón de contenido adicional ( **>>** ) para abrir la lista de pestañas ocultas.
+   ![Captura de pantalla de las herramientas de desarrollo con el botón de contenido adicional resaltado.](https://learn.microsoft.com/es-es/training/modules/web-development-101-accessibility/media/choose-tab.png)
+4. Seleccione **Lighthouse** en la lista.
+5. En **Categories** (Categorías), desactive todos los elementos, excepto **Accessibility** (Accesibilidad).
+6. En **Device** (Dispositivo), seleccione **Desktop** (Escritorio).
+   ![Captura de pantalla de Lighthouse con solo Accessibility (Accesibilidad) seleccionado en Categories (Categorías), y Desktop (Escritorio) seleccionado en Device (Dispositivo).](https://learn.microsoft.com/es-es/training/modules/web-development-101-accessibility/media/lighthouse-option-selection.png)
+7. Seleccione **Generate report** (Generar informe).
+8. Observe la puntuación y la información asociada sobre la página.
+9. Para probar otras páginas, seleccione **Clear all** (Borrar todo) en Lighthouse, vaya a otra página y, a continuación, seleccione **Generate report** (Generar informe).
+   ![Captura de pantalla de la sección de URL de Lighthouse, con el botón para borrar todos los elementos resaltado.](https://learn.microsoft.com/es-es/training/modules/web-development-101-accessibility/media/lighthouse-clear.png)
+
+Ya hemos visto cómo usar Lighthouse, junto con la información de accesibilidad que puede proporcionar la herramienta.
+
+### Asegurarse de que los vínculos e imágenes sean accesibles
+
+Dos de los componentes más comunes de cualquier página web son los vínculos y las imágenes. Estos elementos tienen un fuerte impacto en la accesibilidad. Garantizar un buen texto alternativo y de vínculo es uno de los primeros pasos que puede realizar para mejorar las páginas para todos los usuarios.
+
+#### Texto del vínculo
+
+Los hipervínculos son fundamentales para navegar por la Web. Asegurarse de que un lector de pantalla pueda leer correctamente los vínculos permite a todos los usuarios examinar el sitio.
+
+Observe los dos vínculos del texto de ejemplo siguiente:
+
+* "El pingüino pequeño, a veces conocido como 'pingüino del hada', es el pingüino más pequeño del mundo. [Haga clic aquí](https://en.wikipedia.org/wiki/Little_penguin) para obtener más información".
+* "El pingüino pequeño, a veces conocido como 'pingüino del hada', es el pingüino más pequeño del mundo. Visite [https://en.wikipedia.org/wiki/Little_penguin](https://en.wikipedia.org/wiki/Little_penguin) para obtener más información".
+
+ Nota
+
+Los dos ejemplos muestran lo que *no* debe hacer como desarrollador web.
+
+Aunque estos vínculos pueden parecer buenos para alguien sin discapacidad visual, un lector de pantalla no podrá procesarlos correctamente. Recuerde que los lectores de pantalla leen el texto. Si aparece una dirección URL en el texto, el lector de pantalla leerá la dirección URL. En general, la dirección URL no transmite información significativa y puede molestar. Es posible que haya experimentado este problema si el teléfono le ha leído un mensaje de texto con una dirección URL.
+
+Los lectores de pantalla también tienen pueden leer solo los hipervínculos de una página, de la misma manera que una persona sin discapacidad visual examinaría una página en busca de vínculos. Si el texto del vínculo siempre es "haga clic aquí", el usuario escuchará "haga clic aquí, haga clic aquí, haga clic aquí, haga clic aquí, haga clic aquí..." Ahora, todos los vínculos son indistinguibles entre sí, por lo que genera una experiencia frustrante.
+
+La palabra "clic" también es un problema, porque no todos los usuarios harán clic. Los usuarios de teléfono pulsan, los usuarios del teclado pueden presionar la tecla Entrar o la barra espaciadora, y otros clientes usarán otros medios.
+
+Siempre es necesario usar textos de vínculo que sean significativos. Un texto de vínculo bueno describe brevemente lo que hay en el otro lado del vínculo. En el ejemplo anterior sobre pingüinos pequeños, el vínculo redirige a la página de Wikipedia sobre la especie. La frase *pingüinos pequeños* sería un texto de vínculo perfecto porque deja claro lo que alguien aprenderá si selecciona el vínculo:
+
+* "El [pingüino pequeño](https://en.wikipedia.org/wiki/Little_penguin), a veces conocido como 'pingüino del hada', es el pingüino más pequeño del mundo".
+
+ Nota
+
+Y como ventaja para garantizar que el sitio sea accesible para todos los usuarios, también ayudará a los motores de búsqueda a examinar el sitio. Los motores de búsqueda usan texto de vínculo para aprender los temas de las páginas. Por lo tanto, usar un buen texto de vínculo ayuda a todos los usuarios.
+
+#### Atributos ARIA
+
+Imagínese la siguiente página de un producto:
+
+| Producto    | Descripción           | Ordenar          |
+| ----------- | ---------------------- | ---------------- |
+| Widget      | `[Description]('#')` | `[Order]('#')` |
+| Superwidget | `[Description]('#')` | `[Order]('#')` |
+
+Se trata de un diseño común para una página que muestra información sobre varios elementos de una tabla, con vínculos a la descripción y el pedido. Duplicar el texto de la descripción y el pedido tiene sentido para alguien que usa un explorador. Sin embargo, una persona que usa un lector de pantalla solo escucharía las palabras *descripción* y *pedido* repetidos sin contexto.
+
+Para admitir estos tipos de escenarios, HTML admite un conjunto de atributos conocidos como [aplicaciones de Internet enriquecidas y accesibles (ARIA)](https://developer.mozilla.org/docs/Web/Accessibility/ARIA). Puede usar estos atributos para proporcionar más información a los lectores de pantalla.
+
+Por ejemplo, puede usar `aria-label` para describir un vínculo cuando el formato de la página no se lo permite. La descripción del *widget* podría establecerse de esta forma:
+
+**HTML**
+
+```
+<a href="#" aria-label="Widget description">description</a>
+```
+
+ARIA puede usarse para muchas más cosas que agregar texto para que los lectores de pantalla lean los vínculos. Puede usarse para describir los roles que determinados elementos desempeñan cuando el código HTML semántico no está disponible. Al crear un árbol, por ejemplo, puede usar roles de ARIA para describir la interfaz a un lector de pantalla:
+
+**HTML**
+
+```
+<h2 id="tree-label">File Viewer</h2>
+<div role="tree" aria-labelledby="tree-label">
+  <div role="treeitem" aria-expanded="false" tabindex="0">Uploads</div>
+</div>
+```
+
+ Importante
+
+El uso de marcado semántico y texto de vínculo bueno como se describió anteriormente suele sustituir el uso de ARIA. Los exploradores y los lectores de pantalla no son los únicos clientes que un usuario podría usar, y diseñar la página para que funcione bien para todos los clientes y usuarios debe ser el objetivo principal.
+
+#### Texto alternativo para imágenes
+
+Como regla general, los lectores de pantalla no pueden leer el contenido de una imagen. Aunque algunos podrían usar inteligencia artificial, es posible que los resultados generados no sean precisos contextualmente. Afortunadamente, asegurarse de que las imágenes son accesibles no lleva mucho trabajo; de eso trata el atributo `alt`. Todas las imágenes significativas deben tener un atributo `alt` (conocido ocasionalmente como  *texto alternativo* ) para describir lo que son o la información que intentan transmitir.
+
+Las imágenes que son puramente decorativas deben tener su atributo `alt` establecido en una cadena vacía: `alt=""`. Esta configuración evita que los lectores de pantalla anuncien innecesariamente la imagen interior.
+
+ Nota
+
+Como es de esperar, los motores de búsqueda no pueden entender lo que hay en una imagen, ya que se basan en texto alternativo. Por lo tanto, una vez más, asegurarse de que la página es accesible proporciona ventajas.
+
+### Accesibilidad del diseño
+
+La accesibilidad es un tema relativamente largo. No puede abarcarse por completo en un solo módulo de Learn. Sin embargo, hay algunos principios básicos que recomendamos implementar en cada página que cree. Diseñar una página accesible desde el principio siempre es más fácil que hacer que una página que ya exista sea accesible.
+
+#### Uso del código HTML de la forma en que se diseñó
+
+HTML proporciona muchos elementos que puede usar para crear una página, incluidos botones, vínculos y controles de formulario. Cada uno de esos elementos tiene un conjunto de funcionalidades integradas para, por ejemplo, que se puede hacer clic en ellos, que tengan un vínculo o que acepten el foco.
+
+ Nota
+
+*Foco* es un término de desarrollo web que significa que un control puede aceptar entradas de un teclado. Un botón puede aceptar el foco, lo que permite a alguien activarlo o "hacer clic" en él seleccionando la barra espaciadora.
+
+Con CSS y JavaScript, es posible que cualquier elemento se parezca a cualquier tipo de control. Por ejemplo, puede usar `<span>` para crear un elemento `<button>`, y `<b>` puede convertirse en `<a>`. Aunque esta funcionalidad proporciona algunos accesos directos para aplicar estilos o diseñar la página, se quita la funcionalidad integrada. Herramientas como los lectores de pantalla no podrán entender que `<span>` se usa como `<a>`. Alguien que navega con un teclado no podrá establecer el foco en un elemento `<div>` que se haya programado para simular un elemento `<button>`.
+
+Otro elemento HTML que a menudo se omite son los encabezados (de `<h1>` a `<h6>`). Desde un punto de vista visual, las etiquetas de encabezado van de mayor a menor tamaño de texto. Esta convención lleva a muchos desarrolladores a renunciar a los elementos de encabezado y, en su lugar, a aplicar estilo en `<div>` o en otros elementos genéricos.
+
+Desafortunadamente, los elementos genéricos con estilos solo transmiten información visual en lugar de estructural. Los usuarios de lectores de pantalla [dependen en gran medida de los encabezados](https://webaim.org/projects/screenreadersurvey8/#finding) para buscar información y navegar por una página. La creación de un contenido de encabezado descriptivo y el uso de etiquetas de encabezado semánticas son importantes para crear un sitio fácilmente navegable para los usuarios de lectores de pantalla.
+
+Como procedimiento recomendado, siempre debe usar el código HTML adecuado al crear controles en una página. Si desea un hipervínculo, use `<a>` o `<button>` para un botón.
+
+#### Uso de buenas indicaciones visuales
+
+Los desarrolladores suelen pensar que los lectores de pantalla son la única herramienta de accesibilidad. Sin embargo, es posible que los usuarios usen muchas otras herramientas, o que no usen ninguna. Los usuarios que usan el explorador dependerán de determinadas indicaciones visuales para comprender cómo interactuar con la página.
+
+Una de las características excelentes de CSS es que proporciona un control completo sobre cómo mostrar una página, incluida la eliminación de determinados elementos para mostrar. Por ejemplo, puede quitar el contorno de un cuadro de texto o quitar el subrayado de un hipervínculo. Desafortunadamente, quitar esos tipos de indicaciones puede hacer más difícil que alguien que depende de ellas reconozca el tipo de control.
+
+#### Tenga en cuenta el teclado
+
+Algunos usuarios no pueden usar un mouse o panel táctil. En su lugar, estos usuarios dependen de las interacciones del teclado para desplazarse con la tecla de tabulación de un elemento al siguiente. Es importante que las páginas presenten el contenido en un orden lógico para que un usuario de teclado pueda acceder a cada elemento interactivo a medida que se desplaza hacia abajo.
+
+Cuando un usuario se desplaza por una página mediante tabulación, el foco se mueve de un control al siguiente en función del orden en el que se enumeran los controles en el origen HTML. Los controles de la página deberían aparecer enumerados en el origen HTML en el orden en el que espera que se navegue por la página, y a la vez usar CSS para mostrar la página visualmente a los usuarios.
+
+Por ejemplo, imagínese que crea un formulario con dos columnas. Recomendamos tener en cuenta cuál es el flujo natural para alguien que rellena el formulario y, a continuación, enumerar los controles en ese orden. A continuación, puede usar CSS para crear las columnas y mostrar los controles en sus ubicaciones adecuadas.
+
+La navegación mediante teclado se basa en gran medida en HTML semántico. Ciertos controles (como botones) aceptan el foco, al contrario que los elementos `div`. Si va a volver a crear controles que ya existen en HTML, está dificultando que alguien use la página con un teclado.
+
+ Importante
+
+La navegación con el teclado debe probarse manualmente, y debe hacerlo en todas las páginas que cree. [WebAIM](https://webaim.org/techniques/keyboard/) tiene más información sobre las estrategias de navegación con el teclado.
+
+### Prueba de conocimientos
+
+Elija la respuesta más adecuada para cada pregunta. Después, seleccione  **Comprobar las respuestas** .
+
+**1.** ¿Cuál de los siguientes elementos es un vínculo accesible?
+
+* [ ] `<a href="https://www.microsoft.com">https://www.microsoft.com</a>`
+* [ ] `<a href="https://www.microsoft.com">Microsoft</a>`
+* [ ] `<a href="https://www.microsoft.com/>Click here</a>`
+
+**2.** ¿Cuál de las siguientes afirmaciones es un uso adecuado de los atributos ARIA (aplicaciones de Internet enriquecidas y accesibles)?
+
+* [ ] Indicar a un lector de pantalla que un elemento `div` es realmente un elemento `button`.
+* [ ] Proporcionar texto diferente para que un lector de pantalla lo lea en voz alta cuando el texto del vínculo diga "haga clic aquí".
+* [ ] Dar contexto a un lector de pantalla cuando un control no existe en HTML semántico, como un árbol.
+
+**3.** Para agregar un control que el usuario selecciona para realizar una acción, ¿qué elemento HTML se debe usar?
+
+* [ ] `div`
+* [ ] `span`
+* [ ] `p`
+* [ ] `button`
+
+### Resumen
+
+En este módulo, hemos analizado los conceptos de accesibilidad web. Ha obtenido información sobre lo siguiente:
+
+* Herramientas que usan los usuarios para examinar páginas web
+* Herramientas que usan los desarrolladores para garantizar la accesibilidad
+* Aptitudes para garantizar que las páginas sean accesibles
+
+### Desafío
+
+La mejor manera de entender cómo hacer que las páginas sean accesibles y el impacto de las decisiones que se toman al crear HTML es usar algunas de las herramientas que emplean los usuarios para navegar por la Web.
+
+Desplácese por un par de páginas mediante un lector de pantalla. Abra un sitio web que tenga un formulario y use solo el teclado para completarlo. Esta actividad le dará una idea de lo que algunos usuarios experimentan a diario al usar la Web y la importancia de garantizar que las páginas sean accesibles.
+
+### Créditos
+
+Este módulo se publicó por primera vez como una lección del plan de estudios [Desarrollo web para principiantes](https://github.com/microsoft/Web-Dev-For-Beginners) por parte de promotores de Azure. El autor de la lección original es Christopher Harrison.
+
+## Creación de una interfaz de usuario web con ASP.NET Core
+
+Aprenda a crear páginas web mediante Razor con ASP.NET Core.
+
+### Objetivos de aprendizaje
+
+En este módulo, aprenderá a:
+
+* Entender cuándo y por qué usar Razor Pages para la aplicación ASP.NET Core.
+* Revisar una aplicación de ASP.NET Core que usa Razor Pages
+* Crear una página de Razor que admita los requisitos de administración de datos de productos de la aplicación
+* Usar asistentes de etiquetas para reducir el cambio de contexto entre HTML y C#
+* Usar controladores de página de Razor para controlar las solicitudes HTTP
+
+### Introducción
+
+En este módulo, creará una aplicación web Razor Pages de ASP.NET Core multiplataforma con .NET y C#.
+
+#### Escenario de ejemplo
+
+Imagine que es empleado de una empresa de pizzas llamada Contoso Pizza. El administrador le ha pedido que desarrolle un servicio de administración del inventario de pizzas como requisito previo para el sitio web de administración interna de la empresa. La aplicación debe compilarse de tal forma que los intereses del modelo de datos y la vista estén separados.
+
+#### ¿Qué va a hacer?
+
+En este módulo, aprenderá a:
+
+* Entender cuándo y por qué usar Razor Pages para la aplicación ASP.NET Core.
+* Revisar una aplicación de ASP.NET Core que usa Razor Pages
+* Crear una página de Razor que admita los requisitos de administración de datos de productos de la aplicación
+* Usar aplicaciones auxiliares de etiquetas para reducir el cambio de contexto entre HTML y C#
+* Usar controladores de página de Razor para controlar las solicitudes HTTP
+
+Al final de este módulo, hay vínculos a contenido que proporcionan análisis más profundos de cada área de características presentada.
+
+#### Herramientas necesarias
+
+En este módulo se usa la [CLI de .NET](https://learn.microsoft.com/es-es/dotnet/core/tools/) y [Visual Studio Code](https://code.visualstudio.com/) (Windows, Linux y macOS) para demostrar el desarrollo de Razor Pages con ASP.NET Core. Cuando complete este módulo, podrá aplicar sus conceptos mediante un entorno de desarrollo como Visual Studio (Windows), Visual Studio para Mac (macOS) o Visual Studio Code.
+
+ Sugerencia
+
+Puede omitir la instalación de las herramientas siguientes mediante GitHub Codespaces como su IDE. En otra pestaña del explorador, vaya al [repositorio de GitHub que contiene la aplicación de inicio de este módulo](https://github.com/MicrosoftDocs/mslearn-create-razor-pages-aspnet-core), seleccione el botón **Código** y cree un nuevo codespace en la rama `main`. Para obtener más información, consulte [Crear un codespace](https://docs.github.com/github/developing-online-with-codespaces/creating-a-codespace).
+
+Como alternativa, puede usar la extensión [Contenedores de desarrollo](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) para Visual Studio Code. Con la extensión instalada, presione **F1** para abrir la paleta de comandos y, a continuación, busque y seleccione **Contenedores de desarrollo: Clonar repositorio en volumen de contenedor** y proporcione la dirección URL `https://github.com/MicrosoftDocs/mslearn-create-razor-pages-aspnet-core`. Esto clonará el repositorio y lo abrirá en un contenedor con todas las herramientas necesarias instaladas.
+
+Se requieren las herramientas siguientes:
+
+#### .NET SDK
+
+En este módulo se usa el SDK de .NET 7.0. Asegúrese de que tiene instalado .NET 7.0 mediante la ejecución del siguiente comando en el terminal que prefiera:
+
+**CLI de .NET**
+
+```
+dotnet --list-sdks
+```
+
+Verá un resultado similar al siguiente:
+
+**Consola**
+
+```
+6.0.308 [C:\Program Files\dotnet\sdk]
+7.0.100 [C:\Program Files\dotnet\sdk]
+7.0.102 [C:\Program Files\dotnet\sdk]
+```
+
+Asegúrese de que aparece una versión que comienza por `7`. Si no aparece ninguna o no se encuentra el comando, [instale el SDK más reciente de .NET 7.0](https://dotnet.microsoft.com/download).
+
+#### CLI de GitHub
+
+Para clonar la aplicación de ejemplo desde GitHub, necesitará la [CLI de GitHub](https://cli.github.com/).
+
+#### Visual Studio Code
+
+Asegúrese de que tiene las versiones más recientes de [Visual Studio Code](https://code.visualstudio.com/) y la [extensión de C#](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp).
+
+### Entender cuándo y por qué usar Razor Pages
+
+En esta unidad, aprenderá cuándo y por qué usar Razor Pages para la aplicación ASP.NET Core.
+
+#### Ventajas de Razor Pages
+
+Razor Pages es un modelo de programación centrado en páginas en el lado servidor para crear interfaces de usuario web con ASP.NET Core. Dicha integración aporta las siguientes ventajas:
+
+* Instalación fácil para aplicaciones web dinámicas con HTML, CSS y C#.
+* Archivos organizados por característica para facilitar el mantenimiento.
+* Combina el marcado con código de C# del lado servidor mediante la sintaxis Razor.
+
+En Razor Pages se usa *[Razor](https://learn.microsoft.com/es-es/aspnet/core/mvc/views/razor)* para insertar código basado en servidor en las páginas web. La sintaxis de Razor combina HTML y [C#](https://dotnet.microsoft.com/languages/csharp) para definir la lógica de representación dinámica. Esto significa que puede usar variables y métodos de C# en el marcado HTML para generar contenido web dinámico en el servidor en tiempo de ejecución. Resulta importante saber que Razor Pages no sustituye a HTML, CSS o JavaScript. Es una forma de combinar estas tecnologías para crear contenido web dinámico.
+
+#### Separación de intereses
+
+Razor Pages aplica la separación de intereses con una clase `PageModel` de C#, encapsulando propiedades de datos y operaciones lógicas con ámbito en su página de Razor, y definiendo controladores de página para las solicitudes HTTP. La clase `PageModel` es una [clase parcial](https://learn.microsoft.com/es-es/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) generada automáticamente por la plantilla de proyecto de ASP.NET Core. La clase `PageModel` se encuentra en la carpeta `Pages` y tiene el nombre de la página de Razor. Por ejemplo, la clase `PageModel` de la página de Razor `Index.cshtml` se llama `IndexModel.cs`.
+
+#### Cuándo usar Razor Pages
+
+Use Razor Pages en la aplicación ASP.NET Core cuando:
+
+* Quiera generar una interfaz de usuario web dinámica.
+* Prefiera un enfoque centrado en páginas.
+* Quiera reducir la duplicación con vistas parciales.
+
+Razor Pages simplifica la organización de páginas de ASP.NET Core. Para ello, mantiene juntas las páginas relacionadas y su lógica en su propio espacio de nombres y directorio.
+
+ Nota
+
+ASP.NET Core también admite el [patrón de Controlador de vista de modelo (MVC)](https://learn.microsoft.com/es-es/aspnet/core/mvc/overview) para compilar aplicaciones web. Use MVC cuando prefiera una separación clara entre el modelo, la vista y el controlador. Tanto Razor Pages como MVC pueden coexistir dentro de la misma aplicación. MVC está fuera del ámbito de este módulo.
+
+En la unidad siguiente, realizará un recorrido por una aplicación de Razor Pages.
+
+#### Comprobación de conocimientos
+
+**1.** ¿Cuál de las siguientes afirmaciones es verdadera para Razor Pages?
+
+* [ ] Use Razor Pages para una aplicación ASP.NET Core que no se centre en la generación de HTML, como una API web.
+* [ ] Razor Pages no puede coexistir en una aplicación ASP.NET°Core MVC.
+* [ ] Una ventaja de productividad de Razor Pages es que mantiene juntos los elementos que suelen cambiar para las vistas de la aplicación.
+
+### Ejercicio: Personalización del proyecto
+
+El equipo ha dividido el trabajo de la aplicación de administración del inventario de pizzas. Sus compañeros de equipo han creado la aplicación web ASP.NET Core para usted y ya han creado un servicio para leer y escribir pizzas en una base de datos. Se le ha asignado para trabajar en la página Lista de pizzas, que mostrará una lista de pizzas y le permitirá agregar nuevas pizzas a la base de datos. Empezará explorando el proyecto para comprender cómo se organiza.
+
+#### Obtención de los archivos de proyecto
+
+Si usa GitHub Codespaces, solo tiene que [abrir el repositorio en el explorador](https://github.com/MicrosoftDocs/mslearn-create-razor-pages-aspnet-core), seleccionar **Código** y, después, crear un codespace en la rama `main`.
+
+Si no usa GitHub Codespaces, obtenga los archivos del proyecto y ábralos en Visual Studio Code con los pasos siguientes:
+
+1. Abra un shell de comandos y clone el proyecto desde GitHub mediante la línea de comandos:
+   **Bash**
+
+   ```
+   git clone https://github.com/MicrosoftDocs/mslearn-create-razor-pages-aspnet-core
+   ```
+2. Vaya al directorio `mslearn-create-razor-pages-aspnet-core` y abra el proyecto en Visual Studio Code:
+   **Bash**
+
+   ```
+   cd mslearn-create-razor-pages-aspnet-core
+   code .
+   ```
+
+ Sugerencia
+
+Si tiene instalado un entorno de ejecución de contenedor compatible, puede usar la extensión [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) para abrir el repositorio en un contenedor con las herramientas preinstaladas.
+
+#### Revisión del trabajo de sus compañeros de equipo
+
+Dediquemos un momento a familiarizarnos con el código de la carpeta ContosoPizza. El proyecto es una aplicación web ASP.NET Core creada con el comando `dotnet new webapp`. Los cambios realizados por los compañeros de equipo se describen a continuación.
+
+ Sugerencia
+
+No dedique demasiado tiempo a revisar estos cambios. Sus compañeros de equipo ya han realizado el trabajo para crear la base de datos y el servicio para leer y escribir pizzas en la base de datos, pero no realizaron ningún cambio en la interfaz de usuario. Va a crear una interfaz de usuario que consuma su servicio en la unidad siguiente.
+
+* Se agregó una carpeta *Models* al proyecto.
+  * La carpeta model contiene una clase `Pizza` que representa una pizza.
+* Se agregó una carpeta *Data* al proyecto.
+  * La carpeta Data contiene una clase `PizzaContext` que representa el contexto de la base de datos. Hereda de la clase `DbContext` de Entity Framework Core. Entity Framework Core es un asignador relacional de objetos (ORM) que facilita el trabajo con bases de datos.
+* Se agregó una carpeta *Services* al proyecto.
+  * La carpeta Services contiene una clase `PizzaService` que expone métodos para enumerar y agregar pizzas.
+  * La clase `PizzaService` usa la clase `PizzaContext` para leer y escribir pizzas en la base de datos.
+  * La clase se registra para la inserción de dependencias en *Program.cs* (línea 10).
+
+Entity Framework Core también generó algunas cosas:
+
+* Se generó una carpeta  *Migrations* .
+  * La carpeta Migrations contiene código para crear el esquema de la base de datos.
+* Se generó el archivo de base de datos SQLite  *ContosoPizza.db* .
+  * Si tiene instalada la [extensión SQLite](https://marketplace.visualstudio.com/items?itemName=alexcvzz.vscode-sqlite) (o usa GitHub Codespaces), puede ver la base de datos haciendo clic con el botón derecho en el archivo y seleccionando  **Abrir base de datos** . El esquema de la base de datos se muestra en la pestaña **SQLite Explorer** del panel Explorador.
+
+#### Revisión de la estructura del proyecto de Razor Pages
+
+Todo lo demás del proyecto no cambia desde el momento en que se creó el proyecto. En la tabla siguiente se describe la estructura del proyecto generada por el comando `dotnet new webapp`.
+
+| Nombre                  | Descripción                                                                                                                                      |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| *Pages/*              | Contiene Razor Pages y archivos auxiliares. Cada página de Razor tiene un archivo*.cshtml* y un archivo de clase *.cshtml.cs* `PageModel`. |
+| *wwwroot/*            | Contiene archivos de recursos estáticos, como HTML, JavaScript y CSS.                                                                            |
+| *ContosoPizza.csproj* | Contiene los metadatos de configuración del proyecto, como las dependencias.                                                                     |
+| *Program.cs*          | Actúa como punto de entrada de la aplicación y configura el comportamiento de la aplicación, como el enrutamiento.                             |
+
+Otras observaciones destacadas:
+
+* **Archivos de página de Razor y su archivo de clase `PageModel` emparejado**
+  Las páginas de Razor se almacenan en el directorio  *Pages* . Como se indicó anteriormente, cada página de Razor tiene un archivo *.cshtml* y un archivo de clase *.cshtml.cs* `PageModel`. La clase `PageModel` permite la separación de la lógica y la presentación de una página de Razor, define los controladores de página para las solicitudes y encapsula las propiedades de datos y la lógica con ámbito en su página de Razor.
+* **La estructura de directorios *Pages *y las solicitudes de enrutamiento de páginas**
+  Razor Pages usa la estructura del directorio *Pages* como convención para el enrutamiento de las solicitudes. En la tabla siguiente se muestra cómo se asignan las direcciones URL a los nombres de archivo:
+
+  | Resolución                | Asignaciones a la página de Razor |
+  | -------------------------- | ---------------------------------- |
+  | `www.domain.com`         | */Pages/Index.cshtml*            |
+  | `www.domain.com/Index`   | */Pages/Index.cshtml*            |
+  | `www.domain.com/Privacy` | *Pages/Privacy.cshtml*           |
+  | `www.domain.com/Error`   | *Pages/Error.cshtml*             |
+
+  Las subcarpetas del directorio *Pages* se usan para organizar las páginas de Razor. Por ejemplo, si hubiera un directorio  *Pages/Products* , las direcciones URL reflejarían esa estructura:
+
+  | Resolución                        | Asignaciones a la página de Razor |
+  | ---------------------------------- | ---------------------------------- |
+  | `www.domain.com/Products`        | *Pages/Products/Index.cshtml*    |
+  | `www.domain.com/Products/Index`  | *Pages/Products/Index.cshtml*    |
+  | `www.domain.com/Products/Create` | *Pages/Products/Create.cshtml*   |
+* **Diseño y otros archivos compartidos**
+  Hay varios archivos que se comparten entre varias páginas. Estos archivos determinan las importaciones de páginas y elementos de diseño comunes. En la siguiente tabla se describe la finalidad de cada campo.
+
+  | Archivo                                           | Descripción                                                                                                                      |
+  | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+  | _ViewImports.cshtml                               | Importa espacios de nombres y clases que se usan en varias páginas.                                                              |
+  | _ViewStart.cshtml                                 | Especifica el diseño predeterminado para todas las páginas de Razor.                                                            |
+  | *Pages/Shared/_Layout.cshtml*                   | Este es el diseño especificado por el archivo `_ViewStart.cshtml`. Implementa elementos de diseño comunes en varias páginas. |
+  | *Pages/Shared/_ValidationScriptsPartial.cshtml* | Proporciona funcionalidad de validación a todas las páginas.                                                                    |
+
+#### Ejecución del proyecto por primera vez
+
+Vamos a ejecutar el proyecto para que podamos verlo en acción.
+
+1. Haga clic con el botón derecho en la carpeta *ContosoPizza* en el **Explorador** y seleccione  **Abrir en terminal integrado** . Se abre una ventana de terminal en el contexto de la carpeta del proyecto.
+2. Escriba el siguiente comando en el terminal:
+   **CLI de .NET**
+
+   ```
+   dotnet watch
+   ```
+
+   Este comando:
+
+   * Compila el proyecto.
+   * Inicia la aplicación.
+   * Busca cambios en los archivos y reinicia la aplicación cuando detecta un cambio.
+3. El IDE le pide que abra la aplicación en un explorador. Seleccione  **Abrir en el explorador** .
+   Sugerencia
+
+   También puede abrir la aplicación buscando la dirección URL en la ventana del terminal. Mantenga presionada la tecla **Ctrl** y haga clic en la dirección URL para abrirla en un explorador.
+4. Compare la página principal representada con *Pages/Index.cshtml* en el IDE:
+
+   * Observe la combinación de código HTML, sintaxis de Razor y C# en el archivo.
+     * La sintaxis de Razor se indica mediante caracteres `@`.
+     * El código de C# se incluye en bloques `@{ }`. Tome nota de las directivas en la parte superior del archivo:
+     * La directiva `@page` especifica que este archivo es una página de Razor.
+     * La directiva `@model` especifica el tipo de modelo de la página (en este caso, `IndexModel`, que se define en  *Pages/Index.cshtml.cs* ).
+   * Revise el bloque de código de C#.
+     * El código establece el valor del elemento `Title` dentro del diccionario `ViewData` en "Página principal".
+     * El diccionario `ViewData` se usa para pasar datos entre la página de Razor y la clase `IndexModel`.
+     * En tiempo de ejecución, el valor `Title` se usa para establecer el elemento `<title>` de la página.
+
+Deje la aplicación en ejecución en la ventana del terminal. Lo usaremos en las próximas unidades. Deje también la pestaña del explorador con la aplicación Contoso Pizza en ejecución. Realizará cambios en la aplicación y el explorador se actualizará automáticamente para mostrar los cambios.
+
+#### Personalización de la página de aterrizaje
+
+Vamos a realizar algunos cambios en la página de aterrizaje para que sea más relevante para la aplicación de pizza.
+
+1. En  *Pages/Index.cshtml* , reemplace el código del bloque de código de C# por el código siguiente:
+   **C#**
+
+   ```
+   ViewData["Title"] = "The Home for Pizza Lovers";
+   TimeSpan timeInBusiness = DateTime.Now - new DateTime(2018, 8, 14);
+   ```
+
+   El código anterior:
+
+   * Establece el valor del elemento `Title` dentro del diccionario `ViewData` en "The Home for Pizza Lovers".
+   * Calcula la cantidad de tiempo transcurrido desde que se abrió la empresa.
+2. Modifique el código HTML de la siguiente manera:
+
+   * Reemplace el elemento `<h1>` por el código siguiente:
+     **CSHTML**
+
+     ```
+     <h1 class="display-4">Welcome to Contoso Pizza</h1>
+     ```
+   * Reemplace el elemento `<p>` por el código siguiente:
+     **CSHTML**
+
+     ```
+     <p class="lead">The best pizza in town for @Convert.ToInt32(timeInBusiness.TotalDays) days!</p>
+     ```
+
+   El código anterior:
+
+   * Cambia el encabezado a "Le damos la bienvenida a Contoso Pizza".
+   * Muestra el número de días transcurridos desde que se abrió la empresa.
+     * El carácter `@` se usa para cambiar de HTML a sintaxis de Razor.
+     * El método `Convert.ToInt32` se usa para convertir la propiedad `TotalDays` de la variable `timeInBusiness` en un entero.
+     * La clase `Convert` forma parte del espacio de nombres `System`, que el elemento importa automáticamente `<ImplicitUsings>` en el archivo  *ContosoPizza.csproj* .
+3. Guarde el archivo. La pestaña del explorador con la aplicación se actualiza automáticamente para mostrar los cambios. Si usa GitHub Codespaces, el archivo se guarda automáticamente, pero tendrá que actualizar manualmente la pestaña del explorador.
+
+ Importante
+
+Vigile la ventana del terminal con `dotnet watch` cada vez que guarde el archivo. A veces, el código puede contener lo que llama a una  *edición superficial* . Esto significa que el código que ha cambiado no se puede volver a compilar sin reiniciar la aplicación. Si se le pide que reinicie la aplicación, presione `y` (sí) o `a` (siempre). Si se produce un error en todo lo demás, detenga la aplicación presionando **Ctrl+C** en la ventana del terminal y, a continuación, reiníciela ejecutando `dotnet watch` de nuevo.
+
+Ha realizado sus primeros cambios en una página de Razor. En la unidad siguiente, agregará una nueva página a la aplicación para mostrar una lista de pizzas.
