@@ -1403,12 +1403,12 @@ Entity Framework Core también generó algunas cosas:
 
 Todo lo demás del proyecto no cambia desde el momento en que se creó el proyecto. En la tabla siguiente se describe la estructura del proyecto generada por el comando `dotnet new webapp`.
 
-| Nombre                  | Descripción                                                                                                                                      |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| *Pages/*              | Contiene Razor Pages y archivos auxiliares. Cada página de Razor tiene un archivo*.cshtml* y un archivo de clase *.cshtml.cs* `PageModel`. |
-| *wwwroot/*            | Contiene archivos de recursos estáticos, como HTML, JavaScript y CSS.                                                                            |
-| *ContosoPizza.csproj* | Contiene los metadatos de configuración del proyecto, como las dependencias.                                                                     |
-| *Program.cs*          | Actúa como punto de entrada de la aplicación y configura el comportamiento de la aplicación, como el enrutamiento.                             |
+| Nombre                  | Descripción                                                                                                                                   |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| *Pages/*              | Contiene Razor Pages y archivos auxiliares. Cada página de Razor tiene un archivo*.cshtml* y un archivo de clase*.cshtml.cs* `PageModel`. |
+| *wwwroot/*            | Contiene archivos de recursos estáticos, como HTML, JavaScript y CSS.                                                                         |
+| *ContosoPizza.csproj* | Contiene los metadatos de configuración del proyecto, como las dependencias.                                                                  |
+| *Program.cs*          | Actúa como punto de entrada de la aplicación y configura el comportamiento de la aplicación, como el enrutamiento.                          |
 
 Otras observaciones destacadas:
 
