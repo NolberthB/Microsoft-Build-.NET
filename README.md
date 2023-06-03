@@ -1403,12 +1403,12 @@ Entity Framework Core también generó algunas cosas:
 
 Todo lo demás del proyecto no cambia desde el momento en que se creó el proyecto. En la tabla siguiente se describe la estructura del proyecto generada por el comando `dotnet new webapp`.
 
-| Nombre                  | Descripción                                                                                                                                   |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| *Pages/*              | Contiene Razor Pages y archivos auxiliares. Cada página de Razor tiene un archivo*.cshtml* y un archivo de clase*.cshtml.cs* `PageModel`. |
-| *wwwroot/*            | Contiene archivos de recursos estáticos, como HTML, JavaScript y CSS.                                                                         |
-| *ContosoPizza.csproj* | Contiene los metadatos de configuración del proyecto, como las dependencias.                                                                  |
-| *Program.cs*          | Actúa como punto de entrada de la aplicación y configura el comportamiento de la aplicación, como el enrutamiento.                          |
+| Nombre                  | Descripción                                                                                                                                |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| *Pages/*              | Contiene Razor Pages y archivos auxiliares. Cada página de Razor tiene un archivo*.cshtml* y un archivo de clase*.cshtml.cs*`PageModel`. |
+| *wwwroot/*            | Contiene archivos de recursos estáticos, como HTML, JavaScript y CSS.                                                                      |
+| *ContosoPizza.csproj* | Contiene los metadatos de configuración del proyecto, como las dependencias.                                                               |
+| *Program.cs*          | Actúa como punto de entrada de la aplicación y configura el comportamiento de la aplicación, como el enrutamiento.                       |
 
 Otras observaciones destacadas:
 
@@ -1521,3 +1521,191 @@ Vamos a realizar algunos cambios en la página de aterrizaje para que sea más r
 Vigile la ventana del terminal con `dotnet watch` cada vez que guarde el archivo. A veces, el código puede contener lo que llama a una  *edición superficial* . Esto significa que el código que ha cambiado no se puede volver a compilar sin reiniciar la aplicación. Si se le pide que reinicie la aplicación, presione `y` (sí) o `a` (siempre). Si se produce un error en todo lo demás, detenga la aplicación presionando **Ctrl+C** en la ventana del terminal y, a continuación, reiníciela ejecutando `dotnet watch` de nuevo.
 
 Ha realizado sus primeros cambios en una página de Razor. En la unidad siguiente, agregará una nueva página a la aplicación para mostrar una lista de pizzas.
+
+### Ejercicio: Adición de una nueva página de Razor
+
+En la unidad anterior, obtuvo el código fuente del proyecto Contoso Pizza y, a continuación, realizó algunos cambios sencillos en la página principal. En esta unidad, agregará una nueva página de Razor al proyecto.
+
+#### Creación de la página Lista de pizzas
+
+Para crear una nueva página de Razor, usará la CLI de .NET.
+
+1. Como el comando bloquea el comando `dotnet watch`, abra otro comando haciendo clic con el botón derecho en la carpeta *ContosoPizza* en el **Explorador** y seleccione  **Abrir en terminal integrado** .
+2. Escriba el siguiente comando en la ventana del terminal:
+   **CLI de .NET**
+
+   ```
+   dotnet new page --name PizzaList --namespace ContosoPizza.Pages --output Pages
+   ```
+
+   El comando anterior:
+
+   * Crea los archivos siguientes en el espacio de nombres `ContosoPizza.Pages`:
+     * *PizzaList.cshtml* : la página de Razor
+     * *PizzaList.cshtml.cs* : la clase `PageModel` que la acompaña
+   * Almacena ambos archivos en el directorio *Pages* del proyecto.
+3. En  *Pages/PizzaList.cshtml* , agregue el código siguiente dentro del bloque de código `@{ }`:
+   **razor**
+
+   ```
+   ViewData["Title"] = "Pizza List 🍕";
+   ```
+
+   Esto establece el elemento `<title>` de la página.
+4. Agregue el siguiente código al final del archivo :
+   **razor**
+
+   ```
+   <h1>Pizza List 🍕</h1>
+
+   <!-- New Pizza form will go here -->
+
+   <!-- List of pizzas will go here -->
+   ```
+
+   Esto agrega un encabezado a la página, así como dos marcadores de posición de comentario HTML para la funcionalidad que agregará más adelante.
+5. Guarde el archivo. Si usa GitHub Codespaces, el archivo se guarda automáticamente.
+6. Vuelva al terminal en ejecución `dotnet watch` y presione **Ctrl+R** para volver a cargar la aplicación y detectar los nuevos archivos.
+
+## Adición de la página Lista de pizzas al menú de navegación
+
+Este sería un buen momento para probar la página, pero aún no puede hacerlo porque la página no está vinculada al menú de navegación. Lo haremos ahora después.
+
+1. Abra  *Pages/Shared/_Layout.cshtml* .
+2. En el elemento `<ul>` con la clase `navbar-nav` (comienza en la línea 21), observe los elementos `<li>` que contienen los vínculos a las páginas *Inicio* y  *Privacidad* . Agregue el código siguiente al final de la lista, después del elemento `<li>` que contiene el vínculo  *Privacidad* :
+   **razor**
+
+   ```
+   <li class="nav-item">
+       <a class="nav-link text-dark" asp-area="" asp-page="/PizzaList">Pizza List 🍕</a>
+   </li>
+   ```
+
+   Esto agrega un vínculo a la página *Lista de pizzas* al menú de navegación.
+3. Guarde el archivo. La pestaña del explorador con la aplicación se actualiza automáticamente para mostrar los cambios. Si usa GitHub Codespaces, el archivo se guarda automáticamente, pero tendrá que actualizar manualmente la pestaña del explorador.
+4. Seleccione el vínculo *Lista de pizzas 🍕* en el menú de navegación. Aparece la página Lista de pizzas.
+
+## Registro de la clase PizzaService con el contenedor de inserción de dependencias
+
+La página Lista de pizzas depende del objeto `PizzaService` para recuperar la lista de pizzas. Usará la inserción de dependencias para proporcionar el objeto `PizzaService` a la página. Para que esto suceda, debe registrar la clase `PizzaService` con el contenedor.
+
+1. Abra  *Program.cs* .
+2. En la sección que agrega servicios al contenedor, agregue el código siguiente:
+   **C#**
+
+   ```
+   builder.Services.AddScoped<PizzaService>();
+   ```
+
+   Este código registra la clase `PizzaService` con el contenedor de inserción de dependencias. El método `AddScoped` indica que se debe crear un nuevo objeto `PizzaService` para cada solicitud HTTP. Ahora `PizzaService` se puede insertar en cualquier página de Razor.
+3. Guarde el archivo. Si usa GitHub Codespaces, el archivo se guarda automáticamente.
+
+## Presentación de una lista de pizzas
+
+Vamos a modificar la clase d `PageModel` e la página Lista de pizzas para recuperar la lista de pizzas del objeto `PizzaService` y almacenarla en una propiedad .
+
+1. Abra  *Pages/PizzaList.cshtml.cs* .
+2. Agregue las siguientes instrucciones `using` al principio del archivo:
+   **C#**
+
+   ```
+   using ContosoPizza.Models;
+   using ContosoPizza.Services;
+   ```
+
+   Estas instrucciones importan los tipos `Pizza` y `PizzaService` que usará en la página.
+3. Dentro del bloque de espacio de nombres `ContosoPizza.Pages`, reemplace toda la clase `PizzaListModel` por el código siguiente:
+   **C#**
+
+   ```
+   public class PizzaListModel : PageModel
+   {
+       private readonly PizzaService _service;
+       public IList<Pizza> PizzaList { get;set; } = default!;
+
+       public PizzaListModel(PizzaService service)
+       {
+           _service = service;
+       }
+
+       public void OnGet()
+       {
+           PizzaList = _service.GetPizzas();
+       }
+   }
+   ```
+
+   En el código anterior:
+
+   * Se crea un objeto `PizzaService` privado de solo lectura llamado `_service`. Esta variable contendrá una referencia a un objeto `PizzaService`.
+     * La palabra clave `readonly` indica que el valor de la variable `_service` no se puede cambiar después de establecerlo en el constructor.
+   * Se define una propiedad `PizzaList` para contener la lista de pizzas.
+     * El tipo `IList<Pizza>` indica que la propiedad `PizzaList` contendrá una lista de objetos `Pizza`.
+     * `PizzaList` se inicializa en `default!` para indicar al compilador que se inicializará más adelante, por lo que no se requieren comprobaciones de seguridad nulas.
+   * El constructor acepta un objeto `PizzaService`.
+     * La inserción de dependencias proporciona el objeto `PizzaService`.
+   * Se define un método `OnGet` para recuperar la lista de pizzas del objeto `PizzaService` y almacenarla en la propiedad `PizzaList`.
+
+   Sugerencia
+
+   Si necesita ayuda para comprender la seguridad de NULL, consulte [Seguridad de NULL en C#](https://learn.microsoft.com/es-es/training/modules/csharp-null-safety/).
+4. Guarde el archivo. Si usa GitHub Codespaces, el archivo se guarda automáticamente.
+5. Vuelva al terminal en ejecución `dotnet watch` y presione **Ctrl+R** para volver a cargar la aplicación con el servicio registrado y el nuevo constructor para `PizzaListModel`.
+
+## Presentación de la lista de pizzas
+
+Ahora que la página tiene acceso a la lista de pizzas, usará esa lista para mostrar las pizzas en la página.
+
+1. Abra  *Pages/PizzaList.cshtml* .
+2. Reemplace el comentario `<!-- List of pizzas will go here -->` por el código siguiente:
+   **razor**
+
+   ```
+   <table class="table mt-5">
+       <thead>
+           <tr>
+               <th scope="col">Name</th>
+               <th scope="col">Price</th>
+               <th scope="col">Size</th>
+               <th scope="col">Gluten Free</th>
+               <th scope="col">Delete</th>
+           </tr>
+       </thead>
+       <tbody>
+       @foreach (var pizza in Model.PizzaList)
+       {
+           <tr>
+               <td>@pizza.Name</td>
+               <td>@($"{pizza.Price:C}")</td>
+               <td>@pizza.Size</td>
+               <td>@(pizza.IsGlutenFree ? "✔️" : string.Empty)</td>
+               <td>
+                   <form method="post" asp-page-handler="Delete" asp-route-id="@pizza.Id">
+                       <button class="btn btn-danger">Delete</button>
+                   </form>
+               </td>
+           </tr>
+       }
+       </tbody>
+   </table>
+   ```
+
+   En el código anterior:
+
+   * Se crea un elemento `<table>` para mostrar la lista de pizzas.
+   * Se crea un elemento `<thead>` para contener el encabezado de tabla.
+   * La instrucción `@foreach` dentro de la iteración `<tbody>` sobre la lista de pizzas.
+     * La propiedad `Model` hace referencia al objeto `PizzaListModel` que se creó en el archivo de código subyacente.
+     * La propiedad `PizzaList` hace referencia a la propiedad `PizzaList` definida en el archivo de código subyacente.
+   * Cada iteración de la instrucción `@foreach`crea un elemento `<tr>` para contener los datos de pizza:
+     * La sintaxis de Razor se usa para mostrar los datos de pizza en los elementos `<td>`. Esta sintaxis se usa para mostrar las propiedades del objeto `Pizza` almacenado en la variable `pizza` .
+     * `Price` tiene formato mediante la interpolación de cadenas de C#.
+     * Se usa una expresión ternaria para mostrar el valor de la propiedad `IsGlutenFree` como "✔️" o una celda en blanco.
+     * Se crea un formulario para eliminar la pizza.
+       * El atributo `asp-page-handler` indica que el formulario debe enviarse al controlador `Delete` en el archivo de código subyacente. Creará ese controlador en una unidad posterior.
+       * El atributo `asp-route-id` indica que la propiedad `Id` del objeto `Pizza` se debe pasar al controlador `Delete`.
+3. Guarde el archivo. En el explorador, la página Lista de pizzas se actualiza con la lista de pizzas. Si usa GitHub Codespaces, el archivo se guarda automáticamente, pero tendrá que actualizar manualmente la pestaña del explorador.
+
+![Captura de pantalla de la página Lista de pizzas con la lista de trabajo.](https://learn.microsoft.com/es-es/training/aspnetcore/create-razor-pages-aspnet-core/media/pizza-list.png)
+
+¡Excelente trabajo! Ha creado una página de Razor que muestra una lista de pizzas. En la unidad siguiente, obtendrá información sobre los asistentes de etiquetas y los controladores de página.
