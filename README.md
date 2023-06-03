@@ -1567,7 +1567,7 @@ Para crear una nueva página de Razor, usará la CLI de .NET.
 5. Guarde el archivo. Si usa GitHub Codespaces, el archivo se guarda automáticamente.
 6. Vuelva al terminal en ejecución `dotnet watch` y presione **Ctrl+R** para volver a cargar la aplicación y detectar los nuevos archivos.
 
-## Adición de la página Lista de pizzas al menú de navegación
+#### Adición de la página Lista de pizzas al menú de navegación
 
 Este sería un buen momento para probar la página, pero aún no puede hacerlo porque la página no está vinculada al menú de navegación. Lo haremos ahora después.
 
@@ -1585,7 +1585,7 @@ Este sería un buen momento para probar la página, pero aún no puede hacerlo p
 3. Guarde el archivo. La pestaña del explorador con la aplicación se actualiza automáticamente para mostrar los cambios. Si usa GitHub Codespaces, el archivo se guarda automáticamente, pero tendrá que actualizar manualmente la pestaña del explorador.
 4. Seleccione el vínculo *Lista de pizzas 🍕* en el menú de navegación. Aparece la página Lista de pizzas.
 
-## Registro de la clase PizzaService con el contenedor de inserción de dependencias
+#### Registro de la clase PizzaService con el contenedor de inserción de dependencias
 
 La página Lista de pizzas depende del objeto `PizzaService` para recuperar la lista de pizzas. Usará la inserción de dependencias para proporcionar el objeto `PizzaService` a la página. Para que esto suceda, debe registrar la clase `PizzaService` con el contenedor.
 
@@ -1600,7 +1600,7 @@ La página Lista de pizzas depende del objeto `PizzaService` para recuperar la l
    Este código registra la clase `PizzaService` con el contenedor de inserción de dependencias. El método `AddScoped` indica que se debe crear un nuevo objeto `PizzaService` para cada solicitud HTTP. Ahora `PizzaService` se puede insertar en cualquier página de Razor.
 3. Guarde el archivo. Si usa GitHub Codespaces, el archivo se guarda automáticamente.
 
-## Presentación de una lista de pizzas
+#### Presentación de una lista de pizzas
 
 Vamos a modificar la clase d `PageModel` e la página Lista de pizzas para recuperar la lista de pizzas del objeto `PizzaService` y almacenarla en una propiedad .
 
@@ -1652,7 +1652,7 @@ Vamos a modificar la clase d `PageModel` e la página Lista de pizzas para recup
 4. Guarde el archivo. Si usa GitHub Codespaces, el archivo se guarda automáticamente.
 5. Vuelva al terminal en ejecución `dotnet watch` y presione **Ctrl+R** para volver a cargar la aplicación con el servicio registrado y el nuevo constructor para `PizzaListModel`.
 
-## Presentación de la lista de pizzas
+#### Presentación de la lista de pizzas
 
 Ahora que la página tiene acceso a la lista de pizzas, usará esa lista para mostrar las pizzas en la página.
 
@@ -1709,3 +1709,235 @@ Ahora que la página tiene acceso a la lista de pizzas, usará esa lista para mo
 ![Captura de pantalla de la página Lista de pizzas con la lista de trabajo.](https://learn.microsoft.com/es-es/training/aspnetcore/create-razor-pages-aspnet-core/media/pizza-list.png)
 
 ¡Excelente trabajo! Ha creado una página de Razor que muestra una lista de pizzas. En la unidad siguiente, obtendrá información sobre los asistentes de etiquetas y los controladores de página.
+
+### Entender las aplicaciones auxiliares de etiquetas y los controladores de página
+
+En la unidad anterior, ha creado una página de Razor que muestra una lista de pizzas. Ha usado el símbolo `@` para cambiar de contexto entre HTML y C#. En esta unidad, obtendrá información sobre las  *aplicaciones auxiliares de etiquetas* . Las aplicaciones auxiliares de etiquetas son un tipo especial de elemento HTML que puede contener código de C#. También obtendrá información sobre los  *controladores de página* . Los controladores de página son métodos que controlan las solicitudes del explorador. Usará controladores de página en la unidad siguiente para agregar y eliminar pizzas.
+
+#### Aplicaciones auxiliares de etiquetas
+
+Las aplicaciones auxiliares de etiquetas se usan para abordar las ineficacias del cambio de contexto entre HTML y C#. La mayoría de las aplicaciones auxiliares de etiquetas integradas de ASP.NET Core amplían los elementos HTML estándar. Las aplicaciones auxiliares de etiquetas proporcionan atributos adicionales del lado servidor para los elementos HTML, lo que aumenta su solidez.
+
+Hay cuatro aplicaciones auxiliares de etiquetas que debe conocer para este proyecto:  **Parcial** ,  **Etiqueta** , **Entrada** y  **Mensaje de resumen de la validación** .
+
+#### Asistente de etiquetas parciales
+
+**CSHTML**
+
+```
+<partial name="_ValidationScriptsPartial" />
+```
+
+Inserta el contenido del archivo `_ValidationScriptsPartial.cshtml` en una página. El archivo `_ValidationScriptsPartial.cshtml` contiene JavaScript que se usa para validar la entrada de formularios, por lo que debe incluirse en cada página que contenga un formulario.
+
+#### Aplicación auxiliar de etiquetas
+
+**CSHTML**
+
+```
+<label asp-for="Foo.Id" class="control-label"></label>
+```
+
+Extiende el elemento HTML `<label>` estándar. Como es común para muchas aplicaciones auxiliares de etiquetas, usa un atributo `asp-for`. El atributo acepta una propiedad de la clase `PageModel`. En este caso, el nombre de la propiedad `Foo.Id` de `PageModel` (específicamente, la cadena `"Id"`), se representará como el contenido de un elemento HTML `<label>`.
+
+#### Aplicación auxiliar de etiquetas de entrada
+
+**CSHTML**
+
+```
+<input asp-for="Foo.Id" class="form-control" />
+```
+
+De forma similar al ejemplo anterior, extiende el elemento HTML `<input>` estándar. También usa un atributo `asp-for` para especificar una propiedad `PageModel`. En este caso, el valor de la propiedad `Foo.Id` se representará como el atributo `value` de un elemento HTML `<input>`.
+
+#### Asistente de etiquetas de resumen de validación
+
+**CSHTML**
+
+```
+<div asp-validation-summary="All"></div>
+```
+
+La aplicación auxiliar de etiquetas de resumen de validación muestra un mensaje de validación para una única propiedad del modelo.
+
+ Nota
+
+Elementos como las reglas de validación y los nombres para mostrar de propiedad se definen en la clase `PageModel`. Señalaremos dónde encontrarlos en el código en la unidad siguiente.
+
+#### Controladores de página
+
+La clase `PageModel` define controladores de página para las solicitudes HTTP y los datos que se usan para representar la página. En el ejercicio anterior, la clase `PizzaListModel` controló la solicitud HTTP GET mediante el establecimiento del valor de la propiedad `PizzaList` en el valor de `_service.GetPizzas()`.
+
+Entre los controladores comunes se incluyen `OnGet` para la inicialización de página y `OnPost` para los envíos de formularios. Para controlar un HTTP POST, un controlador de página podría comprobar los datos enviados por el usuario, presentar de nuevo la página del formulario de entrada si carece de validez o enviar los datos válidos a un servicio o base de datos para su conservación.
+
+En la unidad siguiente, agregará un formulario para crear pizzas nuevas con varias aplicaciones auxiliares de etiquetas. También agregará controladores de página para controlar el envío de formularios y la eliminación de pizzas.
+
+### Ejercicio: Adición de un nuevo formulario de pizza
+
+En esta unidad, finalizará la página Lista de pizzas mediante la adición de un formulario para crear pizzas nuevas. También agregará controladores de página para controlar el envío de formularios y la eliminación de pizzas.
+
+#### Agregar un formulario para crear pizzas nuevas
+
+Empecemos agregando propiedades a la clase `PizzaListModel` para representar la entrada del usuario. También agregará el controlador de página adecuado.
+
+1. Abra *Pages\PizzaList.cshtml.cs* y agregue la siguiente propiedad a la clase `PizzaListModel`:
+   **C#**
+
+   ```
+   [BindProperty]
+   public Pizza NewPizza { get; set; } = default!;
+   ```
+
+   En el código anterior:
+
+   * Se agrega una propiedad llamada `NewPizza` a la clase `PizzaListModel`.
+     * `NewPizza` es un objeto `Pizza`.
+   * Se aplica el atributo `BindProperty` a la propiedad `NewPizza`.
+     * El atributo `BindProperty` se usa para enlazar la propiedad `NewPizza` a la página de Razor. Al realizarse una solicitud HTTP POST, la propiedad `NewPizza` se rellenará con la entrada del usuario.
+   * La propiedad `NewPizza` se inicializa en `default!`.
+     * La palabra clave `default!` se usa para inicializar la propiedad `NewPizza` en `null`. Esto impide que el compilador genere una advertencia sobre la propiedad `NewPizza` que no se inicializa.
+2. Ahora agregue el controlador de página para HTTP POST. En el mismo archivo, agregue el siguiente método a la clase `PizzaListModel`:
+   **C#**
+
+   ```
+   public IActionResult OnPost()
+   {
+       if (!ModelState.IsValid || NewPizza == null)
+       {
+           return Page();
+       }
+
+       _service.AddPizza(NewPizza);
+
+       return RedirectToAction("Get");
+   }
+   ```
+
+   En el código anterior:
+
+   * La propiedad `ModelState.IsValid` se usa para determinar si la entrada del usuario es válida.
+     * Las reglas de validación se deducen a partir de atributos (como `Required` y `Range`) en la clase `Pizza` en  *Models\Pizza.cs* .
+     * Si la entrada del usuario no es válida, se llama al método `Page` para volver a representar la página.
+   * La propiedad `NewPizza` se usa para agregar una pizza nueva al objeto `_service`.
+   * El método `RedirectToAction` se usa para redirigir al usuario al controlador de página `Get`, que volverá a representar la página con la lista actualizada de pizzas.
+3. Guarde el archivo. Si usa GitHub Codespaces, el archivo se guarda automáticamente.
+4. Vuelva al terminal en ejecución `dotnet watch` y presione **Ctrl+R** para volver a cargar la aplicación.
+
+Ahora que hay un controlador de página para controlar el envío de formularios, vamos a agregar el formulario a la página de Razor.
+
+1. Abra *Pages\PizzaList.cshtml* y reemplace `<!-- New Pizza form will go here -->` por el código siguiente:
+   **razor**
+
+   ```
+   <form method="post">
+   <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+   <div class="form-group">
+       <label asp-for="NewPizza.Name" class="control-label"></label>
+       <input asp-for="NewPizza.Name" class="form-control" />
+       <span asp-validation-for="NewPizza.Name" class="text-danger"></span>
+   </div>
+   <div class="form-group">
+       <label asp-for="NewPizza.Size" class="control-label"></label>
+       <select asp-for="NewPizza.Size" class="form-control" id="PizzaSize">
+           <option value="">-- Select Size --</option>
+           <option value="Small">Small</option>
+           <option value="Medium">Medium</option>
+           <option value="Large">Large</option>
+       </select>
+       <span asp-validation-for="NewPizza.Size" class="text-danger"></span>
+   </div>
+   <div class="form-group form-check">
+       <label class="form-check-label">
+           <input class="form-check-input" asp-for="NewPizza.IsGlutenFree" /> @Html.DisplayNameFor(model => model.NewPizza.IsGlutenFree)
+       </label>
+   </div>
+   <div class="form-group">
+       <label asp-for="NewPizza.Price" class="control-label"></label>
+       <input asp-for="NewPizza.Price" class="form-control" />
+       <span asp-validation-for="NewPizza.Price" class="text-danger"></span>
+   </div>
+   <div class="form-group">
+       <input type="submit" value="Create" class="btn btn-primary" />
+   </div>
+   </form>
+   ```
+
+   En el código anterior:
+
+   * El atributo `asp-validation-summary` se usa para mostrar errores de validación para todo el modelo.
+   * Cada campo de formulario (elementos `<input>` y `<select>`) y `<label>` se enlaza a la propiedad `NewPizza` con el atributo `asp-for`.
+   * El atributo `asp-validation-for` se usa para mostrar errores de validación para cada campo de formulario.
+   * El método `@Html.DisplayNameFor` se usa para mostrar el nombre para mostrar de la propiedad `IsGlutenFree`. Se trata de un método auxiliar de Razor que se usa para mostrar el nombre para mostrar de una propiedad. Con la etiqueta de esta forma, se garantiza que la casilla se active cuando el usuario haga clic en la etiqueta.
+   * Un botón de envío se agrega al formulario para publicar los datos de formulario en el servidor. En tiempo de ejecución, el explorador enviará el formulario como una solicitud HTTP POST al servidor cuando el usuario haga clic en el botón de envío.
+2. En la parte inferior de la página, agregue el código siguiente:
+   **razor**
+
+   ```
+   @section Scripts {
+   <partial name="_ValidationScriptsPartial" />
+   }
+   ```
+
+   Inserta los scripts de validación del lado cliente en la página. Los scripts de validación del lado cliente se usan para validar la entrada del usuario antes de enviarse el formulario al servidor.
+3. Guarde el archivo. En el explorador, la página Lista de pizzas se actualiza con el formulario nuevo. Si usa GitHub Codespaces, el archivo se guarda automáticamente, pero tendrá que actualizar manualmente la pestaña del explorador.
+   ![Captura de pantalla de la página Lista de pizzas con el formulario de nueva pizza.](https://learn.microsoft.com/es-es/training/aspnetcore/create-razor-pages-aspnet-core/media/pizza-list-with-form.png)
+4. Especifique una pizza nueva y seleccione el botón  **Crear** . La página debe actualizarse y mostrar la pizza nueva en la lista.
+
+#### Agregar un controlador de página para eliminar pizzas
+
+Hay un último componente para agregar a la página Lista de pizzas: un controlador de página para eliminar pizzas. Los botones para eliminar pizzas ya aparecen en la página, pero aún no hacen nada.
+
+1. De nuevo en  *Pages\PizzaList.cshtml.cs* , agregue el siguiente método a la clase `PizzaListModel`:
+   **C#**
+
+   ```
+   public IActionResult OnPostDelete(int id)
+   {
+       _service.DeletePizza(id);
+
+       return RedirectToAction("Get");
+   }
+   ```
+
+   En el código anterior:
+
+   * Se llama al método `OnPostDelete` cuando el usuario hace clic en el botón **Eliminar** de una pizza.
+     * La página sabe usar este método porque el atributo `asp-page-handler` en el botón **Eliminar** en *Pages\PizzaList.cshtml* se establece en `Delete`.
+   * El parámetro `id` se usa para identificar la pizza que se va a eliminar.
+     * El parámetro `id` se enlaza al valor de ruta `id` en la dirección URL. Esto se logra con el atributo `asp-route-id` en el botón **Eliminar** en  *Pages\PizzaList.cshtml* .
+   * Se llama al método `DeletePizza` en el objeto `_service` para eliminar la pizza.
+   * El método `RedirectToAction` se usa para redirigir al usuario al controlador de página `Get`, que volverá a representar la página con la lista actualizada de pizzas.
+2. Guarde el archivo. Si usa GitHub Codespaces, el archivo se guarda automáticamente.
+3. Pruebe el botón **Eliminar** de una pizza. La página debe actualizarse y la pizza seleccionada debe quitarse de la lista.
+
+¡Enhorabuena! Ha creado correctamente una página de Razor en la que se muestra una lista de pizzas y que permite al usuario agregar pizzas nuevas y eliminar pizzas.
+
+#### Comprobación de conocimientos
+
+**1.** ¿Qué método usaría para controlar el envío de formularios en un elemento `PageModel`?
+
+* [ ] Use un método `OnPost` (o `OnPostAsync`).
+* [ ] Use un método `OnGet`.
+* [ ] Use un `DataAnnotation` para controlar el envío de formularios.
+
+#### Resumen
+
+En este módulo, ha aprendido los conceptos básicos de Razor Pages. Ha aprendido a crear una página de Razor, agregar un modelo y agregar un controlador de páginas. También ha aprendido a usar asistentes de etiquetas para enlazar elementos HTML a propiedades del modelo y generar direcciones URL. Además, ha aprendido a usar la inserción de dependencias para insertar un servicio en una página de Razor.
+
+#### Pasos siguientes
+
+Profundice en la documentación. En este módulo se han presentado las características y los conceptos de ASP.NET Core siguientes:
+
+* [Razor Pages](https://learn.microsoft.com/es-es/aspnet/core/razor-pages/)
+* [Referencia de sintaxis Razor](https://learn.microsoft.com/es-es/aspnet/core/mvc/views/razor)
+* [Aplicaciones auxiliares de etiquetas](https://learn.microsoft.com/es-es/aspnet/core/mvc/views/working-with-forms)
+* [Vistas parciales](https://learn.microsoft.com/es-es/aspnet/core/mvc/views/partial)
+* [Diseño](https://learn.microsoft.com/es-es/aspnet/core/mvc/views/layout)
+* [Enrutamiento](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/routing)
+* [Inserción de dependencias](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/dependency-injection)
+* [Realización de solicitudes HTTP mediante IHttpClientFactory en ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/fundamentals/http-requests#consumption-patterns)
+
+#### Más información con una serie de vídeos de .NET
+
+* [.NET para principiantes](https://www.youtube.com/playlist?list=PLdo4fOcmZ0oWoazjhXQzBKMrFuArxpW80)
+* [ASP.NET Core para principiantes](https://www.youtube.com/playlist?list=PLdo4fOcmZ0oW8nviYduHq7bmKode-p8Wy)
