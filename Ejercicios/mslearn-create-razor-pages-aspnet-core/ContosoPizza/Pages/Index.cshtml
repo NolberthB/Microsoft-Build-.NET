@@ -1,0 +1,17 @@
+﻿@page
+@model IndexModel
+@{
+    @* Establece el valor del elemento Title dentro del diccionario ViewData en "The Home for Pizza Lovers". *@
+    ViewData["Title"] = "The home for Pizza Lovers";
+    @* Calcula la cantidad de tiempo transcurrido desde que se abrió la empresa. *@
+    TimeSpan timeInBusiness = DateTime.Now - new DateTime(2018, 8,14); 
+
+}
+
+<div class="text-center">
+    @* Cambia el encabezado a "Le damos la bienvenida a Contoso Pizza". *@
+    <h1 class="display-4">Welcome to Contoso Pizza</h1>
+    @* Muestra el número de días transcurridos desde que se abrió la empresa. *@
+    <p class="lead">The best pizza in town for @Convert.ToInt32(timeInBusiness.TotalDays) days!. </p>
+</div>
+
