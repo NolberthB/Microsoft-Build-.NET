@@ -1941,3 +1941,1149 @@ Profundice en la documentación. En este módulo se han presentado las caracter�
 
 * [.NET para principiantes](https://www.youtube.com/playlist?list=PLdo4fOcmZ0oWoazjhXQzBKMrFuArxpW80)
 * [ASP.NET Core para principiantes](https://www.youtube.com/playlist?list=PLdo4fOcmZ0oW8nviYduHq7bmKode-p8Wy)
+
+## Creación de una API web con controladores de ASP.NET Core
+
+Cree un servicio RESTful con controladores de ASP.NET Core que admita las operaciones de creación, lectura, actualización y eliminación (CRUD).
+
+### Objetivos de aprendizaje
+
+En este módulo, aprenderá a:
+
+* Crear un proyecto de API web con controladores de ASP.NET Core.
+* Cree una base de datos en memoria para almacenar productos.
+* Agregue compatibilidad con las operaciones CRUD.
+* Pruebe los métodos de acción de la API web desde el shell de comandos.
+
+### Introducción
+
+En este módulo, se explica cómo crear un servicio RESTful multiplataforma mediante controladores de la API web de ASP.NET Core con .NET y C#.
+
+En este módulo se usan la [CLI (interfaz de la línea de comandos) de .NET](https://learn.microsoft.com/es-es/dotnet/core/tools/) y [Visual Studio Code](https://code.visualstudio.com/) para el desarrollo local. Cuando complete este módulo, podrá aplicar sus conceptos mediante un entorno de desarrollo como Visual Studio (Windows) y Visual Studio para Mac (macOS). También puede aplicar los conceptos al desarrollo continuo mediante Visual Studio Code (Windows, Linux y macOS).
+
+#### Escenario de ejemplo
+
+Imagine que es empleado de una empresa de pizzas llamada Contoso Pizza. El administrador le ha pedido que desarrolle un servicio RESTful de administración del inventario de pizzas como requisito previo para el escaparate web y la aplicación móvil de la empresa. El servicio debe permitir la adición, visualización, modificación y eliminación de tipos de pizzas; un uso estandarizado de los verbos de acción HTTP más conocidos como *crear, leer, actualizar y eliminar* (CRUD).
+
+#### ¿Qué hará?
+
+En este módulo va a crear una nueva aplicación de API web con ASP.NET Core y va a aprender a ejecutarla y probarla desde la línea de comandos. Luego va a agregar un almacén de datos y un nuevo controlador de API. Por último, va a implementar y probar los métodos de API para crear, leer, actualizar y eliminar pizzas del almacén de datos.
+
+#### ¿Cuál es el objetivo principal?
+
+Al final de esta sesión, podrá crear nuevas aplicaciones de API web mediante ASP.NET Core. También sabrá cómo crear controladores de API que implementen lógica CRUD básica.
+
+### REST de ASP.NET Core
+
+Al ir a una página web, el servidor web se comunica con el explorador mediante HTML, CSS y JavaScript. Si se interactúa con la página haciendo algo como enviar un formulario de inicio de sesión o seleccionar un botón de compra, el explorador envía la información de vuelta al servidor web.
+
+De forma parecida, los servidores web pueden comunicarse mediante servicios web con una amplia gama de clientes, como exploradores, dispositivos móviles y otros servidores web. Los clientes de API se comunican con el servidor a través de HTTP, y los dos intercambian información mediante un formato de datos como JSON o XML. Las API se suelen usar en aplicaciones de página única (SPA) que realizan la mayor parte de la lógica de interfaz de usuario en un explorador web. La comunicación con el servidor web se produce principalmente a través de las API web.
+
+#### REST: un patrón común para compilar API con HTTP
+
+Transferencia de estado representacional (REST) es un estilo arquitectónico para compilar servicios web. Las solicitudes REST se realizan a través de HTTP. Usan los mismos verbos HTTP que usan los exploradores web para recuperar páginas web y enviar datos a los servidores. Los verbos son:
+
+* `GET`: Recuperar datos del servicio web.
+* `POST`: Crear un nuevo elemento de datos en el servicio web.
+* `PUT`: Actualizar un elemento de datos en el servicio web.
+* `PATCH`: Actualizar un elemento de datos en el servicio web describiendo un conjunto de instrucciones sobre cómo se debe modificar el elemento. La aplicación de ejemplo de este módulo no usa este verbo.
+* `DELETE`: Eliminar un elemento de datos en el servicio web.
+
+Las API de servicio web que se adhieren a REST se denominan API de RESTful. Se definen a través de:
+
+* Identificador URI base.
+* Métodos HTTP, como `GET`, `POST`, `PUT`, `PATCH` o `DELETE`.
+* Un tipo de medio para los datos, como notación de objetos JavaScript (JSON) o XML.
+
+Una API a menudo tiene que proporcionar servicios para unas cuantas cosas diferentes, aunque relacionadas. Por ejemplo, la API de pizzas puede administrar pizzas, clientes y pedidos. Usamos *enrutar* para asignar URI a divisiones lógicas del código, de modo que las solicitudes a https://localhost:5000/pizza se enruten a `PizzaController` y las solicitudes a https://localhost:5000/order lo hagan a `OrderController`.
+
+#### Ventajas de crear API en ASP.NET Core
+
+Con ASP.NET se pueden usar el mismo marco y los mismos patrones para compilar páginas web y servicios. Esto significa que se pueden reutilizar clases de modelos y lógica de validación, e incluso servir a páginas web y servicios en paralelo en el mismo proyecto. Este enfoque tiene ventajas:
+
+* **Serialización simple** : ASP.NET diseñado para experiencias web modernas. Los puntos de conexión serializan automáticamente las clases en JSON con el formato correcto de serie. No se necesita ninguna configuración especial. Por supuesto, puede [personalizar la serialización](https://learn.microsoft.com/es-es/aspnet/core/web-api/advanced/custom-formatters) para los puntos de conexión con requisitos únicos.
+* **Autenticación y autorización** : por motivos de seguridad, los puntos de conexión de API tienen compatibilidad integrada con JSON Web Token (JWT) estándares del sector. La autorización basada en directivas ofrece la flexibilidad necesaria para definir reglas de control de acceso eficaces en el código.
+* **Enrutamiento junto con el código** : ASP.NET permite definir rutas y verbos en línea con el código, mediante atributos. Los datos de la ruta de acceso de la solicitud, la cadena de consulta y el cuerpo de la solicitud se enlazan automáticamente a parámetros de método.
+* **HTTPS predeterminado** : HTTP es una parte importante de las API web modernas y profesionales. Se basa en el cifrado de un extremo a otro para proporcionar privacidad y ayudar a garantizar que las llamadas API no se intercepten ni se modifiquen entre el cliente y el servidor.
+  ASP.NET proporciona compatibilidad con HTTPS de serie. Genera automáticamente un certificado de prueba y lo importa fácilmente para habilitar HTTPS local de modo que puede ejecutar y depurar las aplicaciones de forma segura antes de publicarlas.
+
+#### Uso compartido de código y conocimientos con aplicaciones .NET
+
+Puede usar sus aptitudes y el ecosistema de .NET para compartir la lógica de la API web con otras aplicaciones compiladas con .NET, como móviles, web, escritorio y servicios.
+
+#### Prueba de API web mediante .NET HTTP REPL
+
+Al desarrollar un sitio web tradicional, normalmente el trabajo se ve y se prueba en un explorador web. Las API web aceptan y devuelven datos en lugar de HTML, por lo que un explorador web no es la mejor herramienta de pruebas de API web.
+
+Una de las opciones más fáciles para explorar API web e interactuar con ellas es .NET HTTP REPL. REPL significa  *read-evaluate-print loop* . Es una manera sencilla y popular de compilar entornos de línea de comandos interactivos. En la unidad siguiente va a crear una API web simple y a interactuar con ella mediante .NET HTTP REPL.
+
+#### Comprobación de conocimientos
+
+**1.** ¿Cuál de las siguientes *no* es una razón para compilar una API web mediante ASP.NET Core?
+
+* [ ] Para proporcionar un servidor back-end para un front-end de SPA, como Angular o React.
+* [ ] Proporcionar datos a una aplicación cliente móvil mediante XML o JSON.
+* [ ] Servir a una aplicación web tradicional basada en HTML.
+
+### Ejercicio: Creación de un proyecto de API web
+
+En este módulo se usa el SDK de .NET 6.0. Asegúrese de que tiene instalado .NET 6.0 mediante la ejecución del siguiente comando en el terminal que prefiera:
+
+**CLI de .NET**
+
+```
+dotnet --list-sdks
+```
+
+Verá un resultado similar al siguiente:
+
+**Consola**
+
+```
+3.1.100 [C:\program files\dotnet\sdk]
+5.0.100 [C:\program files\dotnet\sdk]
+6.0.100 [C:\program files\dotnet\sdk]
+```
+
+Asegúrese de que aparece una versión que comienza por `6`. Si no aparece ninguna o no se encuentra el comando, [instale el SDK más reciente de .NET 6.0](https://dotnet.microsoft.com/download).
+
+#### Creación y exploración de un proyecto de API web
+
+Para configurar un proyecto de .NET para que funcione con API web se va a usar Visual Studio Code. Visual Studio Code incluye un terminal integrado que facilita la creación de un proyecto. Si no quiere usar un editor de código, puede ejecutar los comandos de este módulo en un terminal.
+
+1. En Visual Studio Code, seleccione  **Archivo** > **Abrir carpeta** .
+2. Cree una carpeta con el nombre **ContosoPizza** en la ubicación que prefiera y haga clic en  **Seleccionar carpeta** .
+3. Abra el terminal integrado desde Visual Studio Code; para ello, seleccione  **Ver** >**Terminal** en el menú principal.
+4. En la ventana del terminal, copie y pegue el siguiente comando:
+   **CLI de .NET**
+
+   ```
+   dotnet new webapi -f net6.0
+   ```
+
+   Este comando crea los archivos para un proyecto de API web básico que usa controladores, junto con un archivo de proyecto de C# llamado  *ContosoPizza.csproj* , que va a devolver una lista de previsiones meteorológicas. Si se produce un error, asegúrese de que tiene instalado el [SDK de .NET 6](https://dotnet.microsoft.com/download).
+
+   Importante
+
+   Los proyectos de API web están protegidos con `https` de forma predeterminada. Si tiene problemas, [configure el certificado de desarrollo HTTPS de ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/security/enforcing-ssl#trust-the-aspnet-core-https-development-certificate-on-windows-and-macos).
+
+   Puede recibir un mensaje de Visual Studio Code para que agregue recursos a fin de depurar el proyecto. Seleccione **Sí** en el cuadro de diálogo.
+   El comando usa una plantilla de proyecto de ASP.NET Core, con el alias  *webapi* , para aplicar scaffolding a un proyecto de API web basado en C#. Se crea un directorio  *ContosoPizza* . Este directorio contiene un proyecto ASP.NET Core que se ejecuta en .NET. El nombre del proyecto coincide con el nombre del directorio  *ContosoPizza* .
+   Ahora debería tener acceso a estos archivos y directorios:
+   **Bash**
+
+   ```
+   -| Controllers
+   -| obj
+   -| Properties
+   -| appsettings.Development.json
+   -| appsettings.json
+   -| ContosoPizza.csproj
+   -| Program.cs
+   -| WeatherForecast.cs
+   ```
+5. Examine los archivos y directorios siguientes:
+
+   | Nombre                  | Descripción                                                                                                                                     |
+   | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+   | *Controllers/*        | Contiene clases con métodos públicos expuestos como puntos de conexión HTTP.                                                                  |
+   | *Program.cs*          | Configura los servicios y la canalización de solicitudes HTTP de la aplicación, y contiene el punto de entrada administrado de la aplicación. |
+   | *ContosoPizza.csproj* | Contiene los metadatos de configuración del proyecto.                                                                                           |
+
+#### Compilación y prueba de la API web
+
+1. Ejecute el comando siguiente de la CLI de .NET Core en el shell de comandos:
+   **CLI de .NET**
+
+   ```
+   dotnet run
+   ```
+
+   El comando anterior:
+
+   * Busca el archivo de proyecto en el directorio actual.
+   * Recupera e instala las dependencias de proyecto necesarias para este proyecto.
+   * Compila el código del proyecto.
+   * Hospeda la API web con el servidor web de Kestrel de ASP.NET Core en un punto de conexión HTTP y HTTPS.
+
+   Se seleccionará un puerto de 5000 a 5300 para HTTP, y de 7000 a 7300 para HTTPS, en el momento de crear el proyecto. Los puertos usados durante el desarrollo se pueden cambiar fácilmente editando el archivo *launchSettings.json* del proyecto. En este módulo se usa la dirección URL `localhost` segura que comienza por `https`.
+   Obtendrá una salida similar a la siguiente, que indica que la aplicación se está ejecutando:
+   **Consola**
+
+   ```
+   Building...
+   info: Microsoft.Hosting.Lifetime[14]
+         Now listening on: https://localhost:7294
+   info: Microsoft.Hosting.Lifetime[14]
+         Now listening on: http://localhost:5118 
+   info: Microsoft.Hosting.Lifetime[0]
+         Application started. Press Ctrl+C to shut down.
+   info: Microsoft.Hosting.Lifetime[0]
+         Hosting environment: Development  
+   ```
+
+   Si ejecuta esta aplicación en su propio equipo, puede dirigir un explorador al vínculo HTTPS que se muestra en la salida (en el caso anterior, `https://localhost:7294`) para ver la página resultante. Recuerde este puerto, ya que lo usará en todo el módulo donde se usa `{PORT}`.
+   Importante
+
+   Compruebe la salida del terminal si detecta cualquier comportamiento inesperado. Si la compilación no se realiza correctamente o se producen otros errores, la información del archivo de registro ayuda a solucionar problemas. A medida que realice cambios en el código, deberá detener la API web; para ello, seleccione CTRL+C en el teclado y vuelva a ejecutar el comando `dotnet run`.
+2. Abra un explorador web y vaya a:
+   **Bash**
+
+   ```
+   https://localhost:{PORT}/weatherforecast
+   ```
+
+   Debería ver una salida JSON similar a la siguiente:
+
+   **JSON**
+
+   ```
+   [
+       {
+       "date": "2021-11-09T20:36:01.4678814+00:00",
+       "temperatureC": 33,
+       "temperatureF": 91,
+       "summary": "Scorching"
+       },
+       {
+       "date": "2021-11-09T20:36:01.4682337+00:00",
+       "temperatureC": -8,
+       "temperatureF": 18,
+       "summary": "Cool"
+       },
+       // ...
+   ]
+   ```
+3. Abra un nuevo terminal integrado desde Visual Studio Code. Para ello, seleccione  **Terminal** >**Nuevo terminal** en el menú principal y ejecute el siguiente comando:
+   **CLI de .NET**
+
+   ```
+   dotnet tool install -g Microsoft.dotnet-httprepl
+   ```
+
+   El comando anterior instala la herramienta de línea de comandos .NET HTTP REPL que se va a usar para realizar solicitudes HTTP a la API web.
+4. Conéctese a la API web mediante el comando siguiente:
+   **CLI de .NET**
+
+   ```
+   httprepl https://localhost:{PORT}
+   ```
+
+   Como alternativa, ejecute el siguiente comando en cualquier momento mientras `HttpRepl` se ejecuta:
+
+   **CLI de .NET**
+
+   ```
+   connect https://localhost:{PORT}
+   ```
+
+   Sugerencia
+
+   Si la herramienta `HttpRepl` muestra la advertencia  **No se puede encontrar una descripción de OpenAPI** , la causa más probable es un certificado de desarrollo que no es de confianza. `HttpRepl` requiere una conexión de confianza. Para poder continuar, **debe**[configurar el sistema para confiar en el certificado de desarrollo](https://learn.microsoft.com/es-es/aspnet/core/security/enforcing-ssl#trust-the-aspnet-core-https-development-certificate-on-windows-and-macos) con `dotnet dev-certs https --trust`.
+5. Explore los puntos de conexión disponibles ejecutando el siguiente comando:
+   **CLI de .NET**
+
+   ```
+   ls
+   ```
+
+   El comando anterior detecta todas las API disponibles en el punto de conexión conectado. Debería mostrar lo siguiente:
+
+   **Resultados**
+
+   ```
+   https://localhost:{PORT}/> ls
+   .                 []
+   WeatherForecast   [GET] 
+   ```
+6. Ejecute el comando siguiente para ir al punto de conexión `WeatherForecast`:
+   **CLI de .NET**
+
+   ```
+   cd WeatherForecast
+   ```
+
+   El comando anterior muestra una salida de las API disponibles para el punto de conexión `WeatherForecast`:
+
+   **Resultados**
+
+   ```
+   https://localhost:{PORT}/> cd WeatherForecast
+   /WeatherForecast    [GET]
+   ```
+7. Realice una solicitud `GET` en `HttpRepl` usando el comando siguiente:
+   **CLI de .NET**
+
+   ```
+   get
+   ```
+
+   El comando anterior realiza una solicitud `GET` similar a ir al punto de conexión en el explorador:
+
+   **Resultados**
+
+   ```
+   HTTP/1.1 200 OK
+   Content-Type: application/json; charset=utf-8
+   Date: Fri, 02 Apr 2021 17:31:43 GMT
+   Server: Kestrel
+   Transfer-Encoding: chunked
+   [
+       {
+       "date": 4/3/2021 10:31:44 AM,
+       "temperatureC": 13,
+       "temperatureF": 55,
+       "summary": "Sweltering"
+       },
+       {
+       "date": 4/4/2021 10:31:44 AM,
+       "temperatureC": -13,
+       "temperatureF": 9,
+       "summary": "Warm"
+       },
+       // ..
+   ]
+   ```
+8. Cierre la sesión de `HttpRepl` actual con el siguiente comando:
+   **CLI de .NET**
+
+   ```
+   exit
+   ```
+9. Vuelva al terminal `dotnet` en la lista desplegable de Visual Studio Code. Para apagar la API web, seleccione CTRL+C en el teclado.
+
+Ahora que ha creado la API web, la modificará para satisfacer las necesidades de la API web de pizza.
+
+### Controladores de API web de ASP.NET Core
+
+En el ejercicio anterior se ha creado una aplicación web que proporciona datos de previsiones meteorológicas de ejemplo y luego se ha interactuado con ella en HTTP REPL.
+
+Antes de profundizar en la escritura de su propia clase `PizzaController`, vamos a echar un vistazo al código del ejemplo `WeatherController` para comprender cómo funciona. En esta unidad, va a aprender cómo `WeatherController` usa la clase base `ControllerBase` y algunos atributos de .NET para compilar una API web funcional en unas docenas de líneas de código. Una vez que comprenda esos conceptos, estará listo para escribir su propia clase `PizzaController`.
+
+Este es el código de la clase `WeatherController` completa. No se preocupe si aún no tiene sentido. Lo iremos viendo paso a paso.
+
+**C#**
+
+```
+using Microsoft.AspNetCore.Mvc;
+
+namespace ContosoPizza.Controllers;
+
+[ApiController]
+[Route("[controller]")]
+public class WeatherForecastController : ControllerBase
+{
+    private static readonly string[] Summaries = new[]
+    {
+        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+    };
+
+    private readonly ILogger<WeatherForecastController> _logger;
+
+    public WeatherForecastController(ILogger<WeatherForecastController> logger)
+    {
+        _logger = logger;
+    }
+
+    [HttpGet(Name = "GetWeatherForecast")]
+    public IEnumerable<WeatherForecast> Get()
+    {
+        return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        {
+            Date = DateTime.Now.AddDays(index),
+            TemperatureC = Random.Shared.Next(-20, 55),
+            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+        })
+        .ToArray();
+    }
+}
+
+```
+
+#### La clase base: `ControllerBase`
+
+Un controlador es una clase pública con uno o varios métodos públicos llamados  *acciones* . Por convención, se coloca un controlador en el directorio *Controllers* de la raíz del proyecto. Las acciones se exponen como puntos de conexión HTTP a través del enrutamiento. Por lo tanto, una solicitud `GET` HTTP a `https://localhost:{PORT}/weatherforecast` hace que se ejecute el método `Get()` de la clase `WeatherForecastController`.
+
+Lo primero que hay que tener en cuenta es que esta clase hereda de la clase base `ControllerBase`. Esta clase base proporciona una gran cantidad de funcionalidad estándar para controlar solicitudes HTTP, lo que permite centrarse en la lógica de negocios específica de la aplicación.
+
+ Nota
+
+Si tiene experiencia con el desarrollo con Razor Pages o el desarrollo de la arquitectura Modelo-Vista-Controlador (MVC) en ASP.NET Core, ha usado la clase `Controller`. No cree un controlador de API web mediante la derivación de la clase `Controller`. `Controller` se deriva de `ControllerBase` y agrega compatibilidad con vistas, por lo que sirve para gestionar páginas web, no solicitudes de API web.
+
+#### Atributos de la clase API Controller
+
+Se aplican dos atributos importantes a `WeatherForecastController`, como se muestra en el código siguiente:
+
+**C#**
+
+```
+[ApiController]
+[Route("[controller]")]
+public class WeatherForecastController : ControllerBase
+```
+
+`[ApiController]` habilita [comportamientos fundamentados](https://learn.microsoft.com/es-es/aspnet/core/web-api/#apicontroller-attribute-1) que facilitan la compilación de API web. Algunos comportamientos incluyen [inferencia de origen de parámetros](https://learn.microsoft.com/es-es/aspnet/core/web-api/#binding-source-parameter-inference-1), [enrutamiento de atributos como un requisito](https://learn.microsoft.com/es-es/aspnet/core/web-api/#attribute-routing-requirement-1) y [mejoras en el control de errores de validación de modelos](https://learn.microsoft.com/es-es/aspnet/core/web-api/#automatic-http-400-responses-1).
+
+`[Route]` define el patrón de enrutamiento `[controller]`. El token `[controller]` se sustituye por el nombre del controlador (no distingue mayúsculas de minúsculas ni tiene el sufijo  *Controller* ). Este controlador controla las solicitudes a `https://localhost:{PORT}/weatherforecast`.
+
+ Nota
+
+La ruta podría contener cadenas estáticas, como en `api/[controller]`. En este ejemplo, este controlador controlaría una solicitud a `https://localhost:{PORT}/api/weatherforecast`.
+
+#### Generación de resultados meteorológicos con el método `Get()`
+
+`WeatherForecastController` incluye una acción de controlador único, designada por el atributo `[HttpGet(Name = "GetWeatherForecast")]`. Este atributo enruta las solicitudes `GET` HTTP al método `public IEnumerable<WeatherForecast> Get()`. Por eso, en el ejercicio anterior, las solicitudes a `https://localhost:{PORT}/weatherforecast` dieron lugar a la devolución de los resultados meteorológicos.
+
+Como aprenderá más adelante en este módulo, otras acciones comunes están asociadas a una API web que realiza operaciones CRUD (`GET`, `PUT`, `POST`, `DELETE`). Pero un controlador de API solo debe implementar una acción de controlador.
+
+En este caso, se va a obtener la lista completa de `WeatherForecast` devueltos. La operación `GET` también permite recuperar un único elemento pasando un identificador. En ASP.NET, puede lograr esto mediante el atributo `[HttpGet("{id}")]`. Implementará ese atributo en el ejercicio siguiente.
+
+Ahora que ha aprendido los componentes fundamentales de un controlador de API web, está listo para crear su propia clase `PizzaController`.
+
+#### Comprobación de conocimientos
+
+**1.** ¿Cuál es el propósito del atributo `[ApiController]`?
+
+* [ ] `[ApiController]` habilita comportamientos bien fundamentados que facilitan la compilación de las API web.
+* [ ] `ApiController` es la clase base, que proporciona funcionalidad estándar para controlar solicitudes HTTP.
+* [ ] `[ApiController]` enruta solicitudes HTTP a la clase del controlador asociada.
+
+### Ejercicio: Adición de un almacén de datos
+
+Antes de empezar a implementar una API web para pizzas, es necesario tener un almacén de datos en el que puede realizar operaciones.
+
+Necesita una clase `model` para representar una pizza en el inventario. El modelo contiene propiedades que representan las características de una pizza. El modelo se usa para pasar datos en la API web y para conservar opciones de pizza en el almacén de datos.
+
+En esta unidad, ese almacén de datos es un servicio de almacenamiento en caché en memoria local simple. En una aplicación real se consideraría el uso de una base de datos, como SQL Server, con Entity Framework Core.
+
+#### Creación de un modelo de pizza
+
+1. Ejecute el siguiente comando para crear una carpeta  *Models* :
+   **Bash**
+
+   ```
+   mkdir Models
+   ```
+
+   Seleccione la carpeta *Models* en Visual Studio Code y agregue un nuevo archivo de nombre  *Pizza.cs* .
+
+   ![Captura de pantalla de la adición de un nuevo archivo a la carpeta Models en Visual Studio Code.](https://learn.microsoft.com/es-es/training/aspnetcore/build-web-api-aspnet-core/media/add-pizza-file.png)
+
+   La raíz del proyecto ahora contiene un directorio *Models* con un archivo *Pizza.cs* vacío. El nombre del directorio *Models* es una convención. El nombre del directorio procede de la arquitectura Modelo-Vista-*Controlador* que usa la API web.
+2. Agregue el código siguiente a *Models/Pizza.cs* para definir una pizza. Guarde los cambios.
+   **C#**
+
+   ```
+   namespace ContosoPizza.Models;
+
+   public class Pizza
+   {
+       public int Id { get; set; }
+       public string? Name { get; set; }
+       public bool IsGlutenFree { get; set; }
+   }
+   ```
+
+#### Incorporación de un servicio de datos
+
+1. Ejecute el comando siguiente para crear una carpeta  *Services* .
+   **Bash**
+
+   ```
+   mkdir Services
+   ```
+
+   Seleccione la carpeta en Visual Studio Code y agregue un nuevo archivo de nombre  *PizzaService.cs* .
+
+   ![Captura de pantalla de Visual Studio Code de la incorporación de un nuevo archivo a la carpeta Services.](https://learn.microsoft.com/es-es/training/aspnetcore/build-web-api-aspnet-core/media/add-pizza-service-file.png)
+2. Agregue el código siguiente a *Services/PizzaService.cs* para crear un servicio de datos de pizzas en memoria. Guarde los cambios.
+   **C#**
+
+   ```
+   using ContosoPizza.Models;
+
+   namespace ContosoPizza.Services;
+
+   public static class PizzaService
+   {
+       static List<Pizza> Pizzas { get; }
+       static int nextId = 3;
+       static PizzaService()
+       {
+           Pizzas = new List<Pizza>
+           {
+               new Pizza { Id = 1, Name = "Classic Italian", IsGlutenFree = false },
+               new Pizza { Id = 2, Name = "Veggie", IsGlutenFree = true }
+           };
+       }
+
+       public static List<Pizza> GetAll() => Pizzas;
+
+       public static Pizza? Get(int id) => Pizzas.FirstOrDefault(p => p.Id == id);
+
+       public static void Add(Pizza pizza)
+       {
+           pizza.Id = nextId++;
+           Pizzas.Add(pizza);
+       }
+
+       public static void Delete(int id)
+       {
+           var pizza = Get(id);
+           if(pizza is null)
+               return;
+
+           Pizzas.Remove(pizza);
+       }
+
+       public static void Update(Pizza pizza)
+       {
+           var index = Pizzas.FindIndex(p => p.Id == pizza.Id);
+           if(index == -1)
+               return;
+
+           Pizzas[index] = pizza;
+       }
+   }
+   ```
+
+   Este servicio proporciona un sencillo servicio de almacenamiento en caché de datos en memoria con dos pizzas de forma predeterminada. Nuestra API web usará ese servicio con fines de demostración. Cuando se detiene y se inicia la API web, la caché de datos en memoria se restablecerá a las dos pizzas predeterminadas del constructor de `PizzaService`.
+
+#### Compilación del proyecto de API web
+
+Ejecute el siguiente comando para compilar la aplicación:
+
+**CLI de .NET**
+
+```
+dotnet build
+```
+
+La compilación se ejecuta correctamente sin advertencias. Si se produce un error en la compilación, compruebe la salida con el fin de obtener información para solucionar problemas.
+
+En la unidad siguiente, creará un controlador que usará el modelo `Pizza` y la clase `PizzaService`.
+
+### Ejercicio: Adición de un controlador
+
+Un *controlador* es una clase pública con uno o varios métodos públicos llamados  *acciones* . Por convención, se coloca un controlador en el directorio *Controllers* de la raíz del proyecto. Las acciones se exponen como puntos de conexión HTTP dentro del controlador de API web.
+
+#### Creación de un controlador
+
+1. Seleccione la carpeta *Controladores* en Visual Studio Code y agregue un nuevo archivo denominado  *PizzaController.cs* .
+   ![Captura de pantalla de Visual Studio Code de la incorporación de un nuevo archivo a la carpeta Controladores.](https://learn.microsoft.com/es-es/training/aspnetcore/build-web-api-aspnet-core/media/add-pizza-controller-file.png)
+   Se crea un archivo de clase vacío de nombre *ProductsController.cs* en el directorio  *Controllers* . El nombre del directorio *Controllers* es una convención. El nombre del directorio procede de la arquitectura Modelo-Vista-*Controlador* que usa la API web.
+   Nota
+
+   Por convención, los nombres de clase de los controladores llevan el sufijo  *Controller* .
+2. Agregue el código siguiente a  *Controllers/PizzaController.cs* . Guarde los cambios.
+   **C#**
+
+   ```
+   using ContosoPizza.Models;
+   using ContosoPizza.Services;
+   using Microsoft.AspNetCore.Mvc;
+
+   namespace ContosoPizza.Controllers;
+
+   [ApiController]
+   [Route("[controller]")]
+   public class PizzaController : ControllerBase
+   {
+       public PizzaController()
+       {
+       }
+
+       // GET all action
+
+       // GET by Id action
+
+       // POST action
+
+       // PUT action
+
+       // DELETE action
+   }
+   ```
+
+   Como ha aprendido anteriormente, esta clase se deriva de `ControllerBase`, la clase base para trabajar con solicitudes HTTP de ASP.NET Core. También incluye los dos atributos estándar sobre los que ha aprendido: `[ApiController]` y `[Route]`. Como antes, el atributo `[Route]` define una asignación al token `[controller]`. Dado que esta clase de controlador se denomina `PizzaController`, este controlador controla las solicitudes a `https://localhost:{PORT}/pizza`.
+
+#### Obtención de todas las pizzas
+
+El primer verbo REST que hay que implementar es `GET`, con el que un cliente puede obtener todas las pizzas de la API. Se puede usar el atributo integrado `[HttpGet]` para definir un método que devuelva las pizzas del servicio.
+
+Reemplace el comentario `// GET all action` de *Controllers/ProductsController.cs* por el siguiente código:
+
+**C#**
+
+```
+[HttpGet]
+public ActionResult<List<Pizza>> GetAll() =>
+    PizzaService.GetAll();
+```
+
+La acción anterior:
+
+* Responde solo al verbo HTTP `GET`, tal y como indica el atributo `[HttpGet]`.
+* Devuelve una instancia `ActionResult` de tipo `List<Pizza>`. El tipo `ActionResult` es la clase base para todos los resultados de acción en ASP.NET Core.
+* Consulta el servicio en busca de todas las pizzas y devuelve automáticamente los datos cuyo `Content-Type` es `application/json`.
+
+#### Recuperación de una única pizza
+
+Es posible que el cliente también quiera solicitar información sobre una pizza específica en lugar de toda la lista. Se puede implementar otra acción `GET` que requiera un parámetro `id`. Se puede usar el atributo integrado `[HttpGet("{id}")]` para definir un método que devuelva las pizzas del servicio. La lógica de enrutamiento registra `[HttpGet]` (sin `id`) y `[HttpGet("{id}")]` (con `id`) como dos rutas diferentes. A continuación, puede escribir una acción independiente para recuperar un solo elemento.
+
+Reemplace el comentario `// GET by Id action` de *Controllers/ProductsController.cs* por el siguiente código:
+
+**C#**
+
+```
+[HttpGet("{id}")]
+public ActionResult<Pizza> Get(int id)
+{
+    var pizza = PizzaService.Get(id);
+
+    if(pizza == null)
+        return NotFound();
+
+    return pizza;
+}
+```
+
+La acción anterior:
+
+* Responde solo al verbo HTTP `GET`, tal y como indica el atributo `[HttpGet]`.
+* Requiere que se incluya el valor del parámetro `id` en el segmento de URL después de `pizza/`. Recuerde que el atributo `/pizza` de nivel de controlador ha definido el patrón `[Route]`.
+* Consulta la base de datos en busca de una pizza que coincida con el parámetro `id` proporcionado.
+
+Cada instancia `ActionResult` usada en la acción anterior se asigna al código de estado HTTP correspondiente en la tabla siguiente.
+
+| Resultado de la acción``de ASP.NET Core | Código de estado HTTP | Descripción                                                                                                                                                                                                                                                        |
+| ---------------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Ok` está implícito                  | 200                    | Hay un producto que coincide con el parámetro `id` proporcionado en la caché en memoria.``El producto se incluye en el cuerpo de la respuesta en el tipo multimedia que se define en el encabezado de solicitud HTTP `accept` (JSON de forma predeterminada). |
+| `NotFound`                             | 404                    | No hay ningún producto que coincida con el parámetro `id` proporcionado en la caché en memoria.                                                                                                                                                                |
+
+#### Compilación y prueba del controlador
+
+1. Ejecute el siguiente comando para compilar e iniciar la API web:
+   **CLI de .NET**
+
+   ```
+   dotnet run
+   ```
+2. Abra el terminal `httprepl` existente o uno nuevo integrado desde Visual Studio Code seleccionando  **Terminal** >**Nuevo terminal** en el menú principal.
+3. Conéctese a la API web mediante el comando siguiente:
+   **CLI de .NET**
+
+   ```
+   httprepl https://localhost:{PORT}
+   ```
+
+   Como alternativa, ejecute el siguiente comando en cualquier momento mientras `HttpRepl` se ejecuta:
+
+   **CLI de .NET**
+
+   ```
+   connect https://localhost:{PORT}
+   ```
+4. Para ver el punto de conexión de `Pizza` ya disponible, ejecute el siguiente comando:
+   **CLI de .NET**
+
+   ```
+   ls
+   ```
+
+   El comando anterior detecta todas las API disponibles en el punto de conexión conectado. Debería mostrar el código siguiente:
+
+   **Resultados**
+
+   ```
+    https://localhost:{PORT}/> ls
+    .                 []
+    Pizza             [GET]
+    WeatherForecast   [GET]
+   ```
+5. Ejecute el comando siguiente para ir al punto de conexión `Pizza`:
+   **CLI de .NET**
+
+   ```
+   cd Pizza
+   ```
+
+   El comando anterior muestra una salida de las API disponibles para el punto de conexión `Pizza`:
+
+   **Resultados**
+
+   ```
+   https://localhost:{PORT}/> cd Pizza
+   /Pizza    [GET]
+   ```
+6. Realice una solicitud `GET` en `HttpRepl` usando el comando siguiente:
+   **CLI de .NET**
+
+   ```
+   get
+   ```
+
+   El comando anterior devuelve una lista de todas las pizzas de JSON:
+
+   **Resultados**
+
+   ```
+     HTTP/1.1 200 OK
+     Content-Type: application/json; charset=utf-8
+     Date: Fri, 02 Apr 2021 21:55:53 GMT
+     Server: Kestrel
+     Transfer-Encoding: chunked
+
+     [
+         {
+             "id": 1,
+             "name": "Classic Italian",
+             "isGlutenFree": false
+         },
+         {
+             "id": 2,
+             "name": "Veggie",
+             "isGlutenFree": true
+         }
+     ]
+   ```
+7. Para consultar en busca de una sola pizza, se puede realizar otra solicitud `GET`, pero pase un parámetro `id` usando el comando siguiente:
+   **CLI de .NET**
+
+   ```
+   get 1
+   ```
+
+   El comando anterior devuelve `Classic Italian` con la salida siguiente.
+
+   **Resultados**
+
+   ```
+   HTTP/1.1 200 OK
+   Content-Type: application/json; charset=utf-8
+   Date: Fri, 02 Apr 2021 21:57:57 GMT
+   Server: Kestrel
+   Transfer-Encoding: chunked
+
+   {
+       "id": 1,
+       "name": "Classic Italian",
+       "isGlutenFree": false
+   }
+   ```
+8. La API también controla situaciones en las que el elemento no existe. Llame a la API de nuevo, pero pase un parámetro `id` de pizza no válido con el siguiente comando:
+   **CLI de .NET**
+
+   ```
+   get 5
+   ```
+
+   El comando anterior devuelve un error `404 Not Found` con la siguiente salida:
+
+   **Resultados**
+
+   ```
+   HTTP/1.1 404 Not Found
+   Content-Type: application/problem+json; charset=utf-8
+   Date: Fri, 02 Apr 2021 22:03:06 GMT
+   Server: Kestrel
+   Transfer-Encoding: chunked
+
+   {
+       "type": "https://tools.ietf.org/html/rfc7231#section-6.5.4",
+       "title": "Not Found",
+       "status": 404,
+       "traceId": "00-ec263e401ec554b6a2f3e216a1d1fac5-4b40b8023d56762c-00"
+   }
+   ```
+9. Vuelva al terminal `dotnet` en la lista desplegable de Visual Studio Code y apague la API web presionando CTRL+C en el teclado.
+
+Ya ha terminado de implementar los verbos `GET`. En la unidad siguiente, puede agregar más acciones a `PizzaController` para admitir operaciones CRUD en datos de pizza.
+
+### Acciones CRUD de ASP.NET Core
+
+Nuestro servicio de pizza admite operaciones CRUD para obtener una lista de pizzas. Estas operaciones se realizan a través de verbos HTTP, que se asignan a través de atributos de ASP.NET Core. Como ha visto, el verbo HTTP `GET` se usa para recuperar uno o varios elementos de un servicio. Esta acción se anota con el atributo `[HttpGet]`.
+
+En la tabla siguiente se muestra la asignación de las cuatro operaciones que se están implementando para el servicio de pizzas:
+
+| Verbo de acción HTTP | Operación CRUD | Atributo de ASP.NET Core |
+| --------------------- | --------------- | ------------------------ |
+| `GET`               | Lectura         | `[HttpGet]`            |
+| `POST`              | Crear           | `[HttpPost]`           |
+| `PUT`               | Actualizar      | `[HttpPut]`            |
+| `DELETE`            | Eliminar        | `[HttpDelete]`         |
+
+Ya ha visto cómo funcionan las acciones `GET`. Vamos a obtener más información sobre las acciones `POST`, `PUT` y `DELETE`.
+
+#### POST
+
+Para permitir que los usuarios agreguen un nuevo elemento al punto de conexión, debe implementar la acción `POST` mediante el atributo `[HttpPost]`. Al pasar el elemento (en este ejemplo, una pizza) al método como parámetro, ASP.NET Core convierte automáticamente cualquier aplicación o JSON enviado al punto de conexión en un objeto `Pizza` de .NET rellenado.
+
+Esta es la firma del método `Create` que va a implementar en la sección siguiente:
+
+**C#**
+
+```
+[HttpPost]
+public IActionResult Create(Pizza pizza)
+{        
+    // This code will save the pizza and return a result
+}
+```
+
+El atributo `[HttpPost]` asignará a las solicitudes HTTP `POST` enviadas a `http://localhost:5000/pizza` mediante el método `Create()`. En lugar de devolver una lista de pizzas, como vimos con el método `Get()`, este método devuelve una respuesta `IActionResult`.
+
+`IActionResult` permite al cliente saber si la solicitud se ha solicitado correctamente y proporciona el identificador de la pizza recién creada. `IActionResult` lo hace con códigos de estado HTTP estándar, por lo que se integra fácilmente con los clientes, independientemente del lenguaje o la plataforma en la que se ejecuten.
+
+| Resultado de la acción``de ASP.NET Core | Código de estado HTTP | Descripción                                                                                                                                                                                                           |
+| ---------------------------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CreatedAtAction`                      | 201                    | La pizza se ha agregado a la caché en memoria.``La pizza se incluye en el cuerpo de la respuesta del tipo de medio según la definición del encabezado de solicitud HTTP `accept` (JSON de manera predeterminada). |
+| `BadRequest` está implícito.         | 400                    | El objeto `pizza` del cuerpo de la solicitud no es válido.                                                                                                                                                          |
+
+Afortunadamente, `ControllerBase` tiene métodos de utilidad que crean los mensajes y códigos de respuesta HTTP adecuados automáticamente. Va a ver cómo funcionan en el ejercicio siguiente.
+
+#### PUT
+
+La modificación o actualización de una pizza del inventario es similar al método POST que implementó, aunque usa el atributo `[HttpPut]` y toma el parámetro `id` además del objeto `Pizza` que se debe actualizar:
+
+**C#**
+
+```
+[HttpPut("{id}")]
+public IActionResult Update(int id, Pizza pizza)
+{
+    // This code will update the pizza and return a result
+}
+```
+
+Cada instancia `ActionResult` usada en la acción anterior se asigna al código de estado HTTP correspondiente en la tabla siguiente.
+
+| Resultado de la acción``de ASP.NET Core | Código de estado HTTP | Descripción                                                                           |
+| ---------------------------------------- | ---------------------- | -------------------------------------------------------------------------------------- |
+| `NoContent`                            | 204                    | La pizza se ha actualizado en la caché en memoria.                                    |
+| `BadRequest`                           | 400                    | El valor `Id` del cuerpo de la solicitud no coincide con el valor `id` de la ruta. |
+| `BadRequest` está implícito.         | 400                    | El objeto `Pizza` del cuerpo de la solicitud no es válido.                          |
+
+#### DELETE
+
+Una de las acciones más fáciles de implementar es la acción `DELETE`, que toma solo el parámetro `id` de la pizza que se va a quitar de la caché en memoria:
+
+**C#**
+
+```
+[HttpDelete("{id}")]
+public IActionResult Delete(int id)
+{
+    // This code will delete the pizza and return a result
+}
+```
+
+Cada instancia `ActionResult` usada en la acción anterior se asigna al código de estado HTTP correspondiente en la tabla siguiente.
+
+| Resultado de la acción``de ASP.NET Core | Código de estado HTTP | Descripción                                                                                      |
+| ---------------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------- |
+| `NoContent`                            | 204                    | La pizza se ha eliminado de la caché en memoria.                                                 |
+| `NotFound`                             | 404                    | No hay ninguna pizza que coincida con el parámetro `id` proporcionado en la caché en memoria. |
+
+En el ejercicio de la siguiente unidad se muestra cómo admitir cada una de estas cuatro acciones en la API web.
+
+#### Comprobar los conocimientos
+
+**1.** Supongamos que necesita actualizar el nombre de un producto. ¿Qué verbo de acción HTTP es la mejor opción para esta solicitud?
+
+* [ ] `POST`
+* [ ] `PUT`
+* [ ] `DELETE`
+
+**2.** ¿En qué escenario es más adecuado devolver un código de estado HTTP 404 y cómo se consigue en ASP.NET Core?
+
+* [ ] El producto se ha actualizado correctamente en la base de datos. Llame al método `BadRequest` para generar un código 404.
+* [ ] Se ha producido un error en la validación del modelo porque faltan los parámetros necesarios de la acción. Llame al método `BadRequest` para generar un código 404.
+* [ ] Después de solicitar un producto por su identificador, no hay ninguna coincidencia en el almacén de datos subyacente. Llame al método `NotFound` para generar un código 404.
+
+### Ejercicio: Implementación de operaciones CRUD
+
+Vamos a seguir ampliando el controlador de API web para agregar la capacidad de crear (`POST`), actualizar (`PUT`) y eliminar (`DELETE`) pizzas en el inventario.
+
+#### Incorporación de una pizza
+
+Habilitemos una pizza para agregarla a través de la API web mediante un método `POST`.
+
+Reemplace el comentario `// POST action` de *Controllers/PizzaController.cs* por el código siguiente:
+
+**C#**
+
+```
+[HttpPost]
+public IActionResult Create(Pizza pizza)
+{          
+    PizzaService.Add(pizza);
+    return CreatedAtAction(nameof(Get), new { id = pizza.Id }, pizza);
+}
+```
+
+La acción anterior:
+
+* Responde solo al verbo HTTP `POST`, tal y como indica el atributo `[HttpPost]`.
+* Inserta el objeto `Pizza` del cuerpo de la solicitud en la caché en memoria.
+
+ Nota
+
+Dado que el controlador se anota con el atributo `[ApiController]`, está implícito que el parámetro `Pizza` se encontrará en el cuerpo de la solicitud.
+
+El primer parámetro de la llamada al método `CreatedAtAction` representa un nombre de acción. Se usa la palabra clave `nameof` para evitar codificar de forma rígida el nombre de la acción. `CreatedAtAction` usa el nombre de la acción para generar un encabezado de respuesta HTTP `location` con una dirección URL a la pizza recién creada, como se ha explicado en la unidad anterior.
+
+#### Modificación de una pizza
+
+Ahora, habilitemos una pizza para actualizarla a través de la API web mediante un método `PUT`.
+
+Reemplace el comentario `// PUT action` de *Controllers/PizzaController.cs* por el código siguiente:
+
+**C#**
+
+```
+[HttpPut("{id}")]
+public IActionResult Update(int id, Pizza pizza)
+{
+    if (id != pizza.Id)
+        return BadRequest();
+         
+    var existingPizza = PizzaService.Get(id);
+    if(existingPizza is null)
+        return NotFound();
+   
+    PizzaService.Update(pizza);         
+   
+    return NoContent();
+}
+```
+
+La acción anterior:
+
+* Responde solo al verbo HTTP PUT, tal y como indica el atributo `[HttpPut]`.
+* Requiere que se incluya el valor del parámetro `id` en el segmento de URL después de `pizza/`.
+* Devuelve `IActionResult` porque no se conoce el tipo de valor devuelto `ActionResult` hasta el tiempo de ejecución. Los métodos `BadRequest`, `NotFound` y `NoContent` devuelven los tipos `BadRequestResult`, `NotFoundResult` y `NoContentResult`, respectivamente.
+
+ Nota
+
+Como el controlador se anota con el atributo `[ApiController]`, está implícito que el parámetro `Pizza` se encontrará en el cuerpo de la solicitud.
+
+#### Eliminación de una pizza
+
+Por último, habilitemos una pizza para quitarla a través de la API web mediante un método `DELETE`.
+
+Reemplace el comentario `// DELETE action` de *Controllers/PizzaController.cs* por el código siguiente:
+
+**C#**
+
+```
+[HttpDelete("{id}")]
+public IActionResult Delete(int id)
+{
+    var pizza = PizzaService.Get(id);
+   
+    if (pizza is null)
+        return NotFound();
+     
+    PizzaService.Delete(id);
+   
+    return NoContent();
+}
+```
+
+La acción anterior:
+
+* Responde solo al verbo HTTP `[HttpDelete]`, tal y como indica el atributo `DELETE`.
+* Requiere que se incluya el valor del parámetro `id` en el segmento de URL después de `pizza/`.
+* Devuelve `IActionResult` porque no se conoce el tipo de valor devuelto `ActionResult` hasta el tiempo de ejecución. Los métodos `NotFound` y `NoContent` devuelven los tipos `NotFoundResult` y `NoContentResult`, respectivamente.
+* Consulta la caché en memoria en busca de una pizza que coincida con el parámetro `id` proporcionado.
+
+No olvide guardar el archivo *Controllers/PizzaController.cs* antes de continuar.
+
+#### Compilación y ejecución de la API web terminada
+
+1. Ejecute el siguiente comando para compilar e iniciar la API web:
+   **CLI de .NET**Copiar
+
+   ```
+   dotnet run
+   ```
+2. Vuelva a abrir el terminal `httprepl` existente o uno nuevo integrado desde Visual Studio Code seleccionando  **Terminal** >**Nuevo terminal** en el menú principal.
+3. Si ha abierto un nuevo terminal, conéctese a la API web ejecutando el siguiente comando:
+   **CLI de .NET**
+
+   ```
+   httprepl https://localhost:{PORT}
+   ```
+
+   Como alternativa, ejecute el siguiente comando en cualquier momento mientras `HttpRepl` se ejecuta:
+
+   **CLI de .NET**
+
+   ```
+   connect https://localhost:{PORT}
+   ```
+4. Ejecute el comando siguiente para ir al punto de conexión `Pizza`:
+   **CLI de .NET**
+
+   ```
+   cd Pizza
+   ```
+5. Ejecute el siguiente comando para ver las nuevas acciones en la API Pizza:
+   **CLI de .NET**
+
+   ```
+   ls
+   ```
+
+   El comando anterior muestra una salida de las API disponibles para el punto de conexión `Pizza`:
+
+   **Resultados**
+
+   ```
+       https://localhost:{PORT}/Pizza> ls
+       .      [GET|POST]
+       ..     []
+       {id}   [GET|PUT|DELETE]
+   ```
+6. Realice una solicitud `POST` para agregar una nueva pizza en `HttpRepl` usando el comando siguiente:
+   **CLI de .NET**
+
+   ```
+   post -c "{"name":"Hawaii", "isGlutenFree":false}"
+   ```
+
+   El comando anterior devuelve una lista de todas las pizzas:
+
+   **Resultados**
+
+   ```
+   HTTP/1.1 201 Created
+   Content-Type: application/json; charset=utf-8
+   Date: Fri, 02 Apr 2021 23:23:09 GMT
+   Location: https://localhost:{PORT}/Pizza?id=3
+   Server: Kestrel
+   Transfer-Encoding: chunked
+
+   {
+       "id": 3,
+       "name": "Hawaii",
+       "isGlutenFree": false
+   }
+   ```
+7. Actualice la nueva pizza `Hawaii` a una `Hawaiian` con una solicitud `PUT` con el siguiente comando:
+   **CLI de .NET**
+
+   ```
+   put 3 -c  "{"id": 3, "name":"Hawaiian", "isGlutenFree":false}"
+   ```
+
+   El comando anterior devuelve la siguiente salida que indica que se ha hecho correctamente:
+
+   **Resultados**
+
+   ```
+   HTTP/1.1 204 No Content
+   Date: Fri, 02 Apr 2021 23:23:55 GMT
+   Server: Kestrel
+   ```
+
+   Para comprobar que la pizza se ha actualizado, vuelva a ejecutar la acción `GET` con el siguiente comando:
+   **CLI de .NET**
+
+   ```
+   get 3
+   ```
+
+   El comando anterior devuelve la pizza recién actualizada:
+   **Resultados**
+
+   ```
+   HTTP/1.1 200 OK
+   Content-Type: application/json; charset=utf-8
+   Date: Fri, 02 Apr 2021 23:27:37 GMT
+   Server: Kestrel
+   Transfer-Encoding: chunked
+
+   {
+       "id": 3,
+       "name": "Hawaiian",
+       "isGlutenFree": false
+   }
+   ```
+8. La API también puede eliminar la pizza recién creada con la acción `DELETE` si ejecuta el siguiente comando:
+   **CLI de .NET**
+
+   ```
+   delete 3
+   ```
+
+   El comando anterior devuelve un resultado `204 No Content` si es correcto:
+
+   **Resultados**
+
+   ```
+   HTTP/1.1 204 No Content
+   Date: Fri, 02 Apr 2021 23:30:04 GMT
+   Server: Kestrel
+   ```
+
+   Para comprobar que la pizza se ha quitado, vuelva a ejecutar la acción `GET` con el siguiente comando:
+   **CLI de .NET**
+
+   ```
+   get
+   ```
+
+   El comando anterior devuelve las pizzas originales como resultados:
+   **Resultados**
+
+   ```
+   HTTP/1.1 200 OK
+   Content-Type: application/json; charset=utf-8
+   Date: Fri, 02 Apr 2021 23:31:15 GMT
+   Server: Kestrel
+   Transfer-Encoding: chunked
+
+   [
+       {
+           "id": 1,
+           "name": "Classic Italian",
+           "isGlutenFree": false
+       },
+       {
+           "id": 2,
+           "name": "Veggie",
+           "isGlutenFree": true
+       }
+   ]
+   ```
+
+Ya se ha terminado de implementar y probar la API web recién creada compilada con ASP.NET Core.
+
+### Resumen
+
+En este módulo, se ha creado una API web de ASP.NET Core que se ejecuta en .NET. La API web crea, lee, actualiza y elimina pizzas desde una caché en memoria.
+
+Ha aprendido que la creación de una API web ASP.NET Core implica lo siguiente:
+
+1. Creación de una nueva aplicación mediante la plantilla  *API web de ASP.NET Core* .
+2. Creación de clases que heredan de la clase `ControllerBase` y que contienen métodos que responden a solicitudes HTTP.
+
+Dado que este patrón permite centrarse en una sola acción de controlador a la vez, es posible crear API web funcionales con bastante rapidez con un poco de práctica.
+
+En este módulo se ha usado una caché en memoria. Este enfoque le ha ayudado a centrarse en el aprendizaje de conceptos de API web, pero tiene algunas limitaciones obvias para las aplicaciones del mundo real. Si la aplicación se detiene, se pierden todos los cambios.
+
+En una aplicación real se recomienda almacenar los datos en una memoria auxiliar, como una base de datos. Puede aprender a conservar y recuperar datos relacionales mediante Entity Framework Core en [este tutorial](https://learn.microsoft.com/es-es/training/modules/persist-data-ef-core/).
+
+#### Vídeos para obtener más información
+
+* [.NET 101](https://learn.microsoft.com/es-es/shows/NET-Core-101/?WT.mc_id=Educationaldotnet-c9-scottha)
+* [API web de ASP.NET Core 101](https://learn.microsoft.com/es-es/shows/Beginners-Series-to-Web-APIs/)
+* [ASP.NET Core 101](https://learn.microsoft.com/es-es/shows/ASPNET-Core-101/?WT.mc_id=Educationaspnet-c9-niner)
+
+#### Artículos para obtener más información
+
+* [Tutorial: Creación de una API web con ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/tutorials/first-web-api)
+* [Creación de API web con ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/web-api/)
+* [Tipos de valor devuelto de acción del controlador en la API web de ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/web-api/action-return-types)
