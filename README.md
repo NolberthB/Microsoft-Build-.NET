@@ -2726,7 +2726,7 @@ Esta es la firma del método `Create` que va a implementar en la sección siguie
 ```
 [HttpPost]
 public IActionResult Create(Pizza pizza)
-{        
+{  
     // This code will save the pizza and return a result
 }
 ```
@@ -2816,7 +2816,7 @@ Reemplace el comentario `// POST action` de *Controllers/PizzaController.cs* por
 ```
 [HttpPost]
 public IActionResult Create(Pizza pizza)
-{          
+{  
     PizzaService.Add(pizza);
     return CreatedAtAction(nameof(Get), new { id = pizza.Id }, pizza);
 }
@@ -2847,12 +2847,12 @@ public IActionResult Update(int id, Pizza pizza)
 {
     if (id != pizza.Id)
         return BadRequest();
-         
+   
     var existingPizza = PizzaService.Get(id);
     if(existingPizza is null)
         return NotFound();
    
-    PizzaService.Update(pizza);         
+    PizzaService.Update(pizza);   
    
     return NoContent();
 }
@@ -2884,7 +2884,7 @@ public IActionResult Delete(int id)
    
     if (pizza is null)
         return NotFound();
-     
+   
     PizzaService.Delete(id);
    
     return NoContent();
@@ -3087,3 +3087,314 @@ En una aplicación real se recomienda almacenar los datos en una memoria auxilia
 * [Tutorial: Creación de una API web con ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/tutorials/first-web-api)
 * [Creación de API web con ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/web-api/)
 * [Tipos de valor devuelto de acción del controlador en la API web de ASP.NET Core](https://learn.microsoft.com/es-es/aspnet/core/web-api/action-return-types)
+
+## Publicación de una aplicación web en Azure con Visual Studio
+
+Use las características de publicación de Visual Studio 2022 para implementar y administrar una aplicación web ASP.NET Core hospedada en Azure.
+
+### Introducción
+
+Imagine que trabaja como desarrollador de software para una estación de esquí. Va a lanzar una nueva aplicación que permitirá que los usuarios vean los mapas de pistas y puedan comprar pases para el telesilla en el sitio web o desde sus teléfonos móviles. Quiere crear una aplicación web ASP.NET para complementar y publicitar la aplicación. Al ser un desarrollador de Visual Studio, quiere usar Visual Studio 2022 para crear, implementar y administrar el sitio nuevo.
+
+Visual Studio y Azure App Service proporcionan un mecanismo eficaz para crear, publicar y mantener aplicaciones web en Azure. Aquí, aprenderá a usar las características de publicación integradas en Visual Studio para implementar y administrar las aplicaciones web ASP.NET hospedada en Azure.
+
+#### Objetivos de aprendizaje
+
+Objetivos de este módulo:
+
+* Crear una aplicación web ASP.NET Core en Visual Studio
+* Publicar una aplicación en Azure mediante Visual Studio
+* Actualizar una aplicación web en Visual Studio y publicar los cambios en Azure
+
+#### Requisitos previos
+
+* Conocimiento del entorno de nube de Azure
+* Familiaridad con Visual Studio 2022
+* Familiaridad con los conceptos de aplicaciones web.
+* Conocimientos básicos de programación
+* Conocimientos básicos de HTML
+* Una instalación local de Visual Studio 2022 en Windows
+
+### Instalación de las cargas de trabajo necesarias
+
+El primer paso para que el nuevo sitio esté listo es preparar el entorno de desarrollo. Para crear e implementar aplicaciones web ASP.NET Core, debe tener las herramientas necesarias instaladas en el equipo local. Aquí se tratarán las herramientas de desarrollo que necesita y cómo instalarlas.
+
+#### Configuración del entorno de desarrollo
+
+Necesitaremos instalar unas cuantas herramientas más en Visual Studio para compilar, depurar e implementar aplicaciones web ASP.NET Core en Azure. Para instalar estas herramientas, instalaremos dos *cargas de trabajo* de Visual Studio.
+
+#### ¿Qué son las cargas de trabajo de Visual Studio?
+
+Una *carga de trabajo* es un paquete preconfigurado de herramientas en Visual Studio. Estos paquetes se agrupan para permitir a los desarrolladores crear determinados tipos de aplicaciones, usar determinados lenguajes de desarrollo o desarrollar para plataformas específicas.
+
+Por ejemplo, la carga de trabajo *Desarrollo para el escritorio con C++* incluye características de Visual Studio que le permiten ejecutar y depurar aplicaciones de consola de C++. La carga de trabajo *Desarrollo para dispositivos móviles con .NET* instala todas las herramientas necesarias para crear aplicaciones móviles con .NET.
+
+#### Cargas de trabajo de Visual Studio para desarrollo y publicación de ASP.NET Core
+
+Visual Studio 2022 tiene dos cargas de trabajo que necesita para crear, publicar e implementar el sitio web en Azure. Estas cargas de trabajo incluyen las plantillas del sitio de ASP.NET Core y le permiten conectarse a Azure e implementar ahí su sitio.
+
+Con Visual Studio 2022 instalado, debe asegurarse de que tiene instaladas las siguientes cargas de trabajo de Visual Studio:
+
+* **Desarrollo de ASP.NET y web** : La carga de trabajo de desarrollo web en Visual Studio está diseñada para maximizar la productividad al desarrollar aplicaciones web mediante ASP.NET y tecnologías basadas en estándares como HTML y JavaScript.
+* **Desarrollo de Azure** : La carga de trabajo de desarrollo de Azure en Visual Studio instala el último Azure SDK para .NET y herramientas para Visual Studio. Una vez que instale estos elementos, puede crear recursos mediante las herramientas de Azure Resource Manager, compilar aplicaciones para los servicios web de Azure y Cloud Services, y realizar operaciones de macrodatos mediante herramientas de Azure Data Lake.
+
+#### Instalación de cargas de trabajo de Visual Studio
+
+Puede usar el Instalador de Visual Studio para modificar los componentes instalados como parte de Visual Studio, incluidas las cargas de trabajo.
+
+1. Para iniciar el instalador, en el menú Inicio de Windows, desplácese hacia abajo hasta la **V** y después seleccione  **Instalador de Visual Studio** . Como alternativa, con el menú Inicio abierto, puede simplemente escribir `Visual Studio Installer` para encontrar el vínculo del instalador. Después, seleccione  **Introducir** .
+2. Aparece la ventana del instalador de Visual Studio. Seleccione el botón  **Modificar** .
+3. Asegúrese de que las cargas de trabajo **Desarrollo de ASP.NET y web** y **Desarrollo de Azure** están seleccionadas en la sección **Web y nube** de la pestaña  **Cargas de trabajo** .
+4. Después, seleccione el botón **Modificar** en la parte inferior derecha del instalador. El Instalador de Visual Studio descargará e instalará los componentes necesarios.
+5. Cuando se complete la instalación, seleccione **Iniciar** para abrir Visual Studio.
+
+Las cargas de trabajo se agregan a la instalación local de Visual Studio y solo debe instalarlas una vez. Puede iniciar el Instalador de Visual Studio en el futuro para agregar más cargas de trabajo, personalizar las cargas de trabajo instaladas o quitarlas.
+
+Para completar los ejercicios de este módulo, necesitará las cargas de trabajo **Desarrollo de ASP.NET y web** y  **Desarrollo de Azure** . Si todavía no lo ha hecho, instale estas cargas de trabajo antes de pasar al siguiente ejercicio.
+
+### Ejercicio: Creación de una aplicación ASP.NET Core
+
+En esta unidad, creará, compilará y ejecutará una nueva aplicación web ASP.NET en el equipo local. Necesitará tener Visual Studio 2022 instalado con las cargas de trabajo **Desarrollo de ASP.NET y web** y  **Desarrollo de Azure** .
+
+#### Crear un proyecto de ASP.NET Core
+
+1. Abra Visual Studio 2022 en el equipo local.
+2. En la página de aterrizaje de Visual Studio, en  **Introducción** , seleccione  **Crear un nuevo proyecto** .
+3. En el cuadro de búsqueda, escriba  **Web** .
+4. En los resultados de la búsqueda, seleccione  **Aplicación web ASP.NET Core** .
+5. Seleccione **Next** (Siguiente).
+6. En el cuadro de diálogo del nuevo proyecto, establezca el campo **Nombre** en  **AlpineSkiHouse** .
+7. Seleccione una **ubicación** para su nueva solución.
+8. Seleccione  **Siguiente** .
+9. Seleccione **.NET 6.0 (Compatibilidad a largo plazo)** en la lista desplegable Marco.
+10. Seleccione **Crear** para crear el proyecto.
+    Nota
+
+    En este cuadro de diálogo también puede seleccionar otras plantillas de inicio en función de los requisitos de desarrollo web. En la parte superior del cuadro de diálogo, también puede seleccionar la versión de ASP.NET Core. Debe seleccionar ASP.NET Core 6.0 si es posible, aunque otras versiones recientes de ASP.NET Core también funcionarán con este ejercicio.
+11. Ahora debe tener una nueva solución de aplicación web ASP.NET Core.
+
+#### Compilación y prueba en la máquina local
+
+Ahora, vamos a compilar y probar su aplicación en la máquina local antes de implementarla en Azure.
+
+1. Ejecute la aplicación:
+   Presione F5 para compilar el proyecto y ejecutarlo en modo de depuración.
+   Presione Ctrl+F5 para compilar el proyecto y ejecutarlo sin asociar el depurador.
+   Sugerencia
+
+   Iniciar la aplicación en modo de no depuración permite realizar cambios en el código, guardar el archivo, actualizar el explorador y ver los cambios de código. Muchos desarrolladores prefieren usar el modo de no depuración para iniciar la aplicación y ver los cambios con rapidez.
+2. Visual Studio inicia el explorador web de IIS Express y carga la aplicación.
+   ![La aplicación web que se ejecuta en un explorador.](https://learn.microsoft.com/es-es/training/modules/publish-azure-web-app-with-visual-studio/media/3-webapp-launch-windows.png)
+   Cuando Visual Studio crea un proyecto web, se usa un puerto aleatorio para el servidor web. En la imagen anterior, el número de puerto es 44381. Al ejecutar la aplicación, es posible que vea un número de puerto diferente.
+   Importante
+
+   Puede que vea cómo la sección de la parte superior de la página web proporciona un lugar para su directiva de uso de cookies y privacidad. Seleccione **Aceptar** para consentir el seguimiento. Esta aplicación no realiza un seguimiento de la información personal. El código generado por la plantilla incluye recursos para ayudar a cumplir el Reglamento general de protección de datos (RGPD).
+
+Ya ha creado una aplicación web con la plantilla de ejemplo y se está ejecutando localmente. El siguiente paso es implementarla en Azure.
+
+### Exploración de Azure App Service
+
+Ha creado un nuevo sitio. El paso siguiente consiste en implementarlo en Azure. Debemos pensar en qué servicios de Azure vamos a aprovechar. Azure App Service proporciona un servicio de hospedaje web muy escalable y con aplicación de revisiones automática para las aplicaciones.
+
+Aquí veremos cómo usar Visual Studio para publicar la aplicación web ASP.NET Core en un plan de Azure App Service.
+
+#### ¿Qué es Azure App Service?
+
+Azure App Service es un servicio para hospedar aplicaciones web, API REST y servicios de back-end. App Service admite código escrito en .NET Core, .NET Framework, Java, Ruby, Node.js, PHP y Python. App Service es recomendable para la mayoría de los sitios web, especialmente si no se necesita un control estricto sobre la infraestructura de hospedaje.
+
+#### ¿Qué es el plan de App Service?
+
+El plan de App Service define los recursos de proceso que usará la aplicación, dónde se encuentran esos recursos, cuántos recursos adicionales puede usar el plan y el tipo de plan de tarifa que se está usando. Estos recursos de proceso son análogos a la granja de servidores de un hospedaje web convencional. Puede configurar una o varias aplicaciones para que se ejecuten en el mismo plan de App Service.
+
+Al implementar las aplicaciones, puede crear un plan de App Service o seguir agregando aplicaciones a un plan existente. Sin embargo, las aplicaciones del mismo plan de App Service comparten los mismos recursos de proceso. Para determinar si la nueva aplicación tiene los recursos necesarios, debe reconocer la capacidad del plan de App Service existente y la carga prevista para la nueva aplicación. La sobrecarga de un plan de App Service puede provocar un rendimiento reducido o tiempo de inactividad en las aplicaciones nuevas y existentes.
+
+Puede definir un plan de App Service de antemano en Azure Portal con PowerShell o la CLI de Azure, o configurar uno mientras publica la aplicación en Visual Studio.
+
+Cada plan de App Service define:
+
+* Región (oeste de EE. UU., este de EE. UU., etc.)
+* Número de instancias de VM
+* Tamaño de las instancias de máquina virtual (pequeño, mediano, grande)
+* Plan de tarifa (Gratis, Compartido, Básico, Estándar, Premium V2, Aislado)
+
+#### Seleccione una región.
+
+Al crear un plan de App Service, tiene que definir la región o ubicación donde se va a hospedar ese plan. Normalmente, se elige una región próxima geográficamente a los clientes previstos.
+
+#### Niveles de precios y confiabilidad
+
+ **Proceso compartido** : los dos planes básicos, **Gratis** y  **Compartido** , ejecutan una aplicación en la misma VM de Azure que otras aplicaciones de App Service, incluidas las aplicaciones de otros clientes. Estos planes asignan cuotas de CPU a cada aplicación que se ejecuta en los recursos compartidos, y los recursos no pueden escalarse horizontalmente.
+
+Los planes Gratis y Compartido son ideales para proyectos personales a pequeña escala con demandas de tráfico limitadas, con un límite establecido de 165 MB de datos salientes cada 24 horas.
+
+ **Proceso dedicado** : los planes **Básico, Estándar, Premium y V2** ejecutan aplicaciones en VM de Azure dedicadas. Solo las aplicaciones del mismo plan de App Service comparten los mismos recursos de proceso. Cuanto mayor sea el plan, más instancias de VM estarán disponibles para la escalabilidad horizontal.
+
+El plan de servicio Estándar es ideal para cargas de trabajo de producción activas, donde se van a publicar aplicaciones comerciales para clientes.
+
+Los planes de servicio Premium admiten aplicaciones web de alta capacidad donde no se quieren los costos adicionales de un plan dedicado (aislado).
+
+ **Aislado** : este plan ejecuta VM de Azure dedicadas en instancias dedicadas de Azure Virtual Network, lo que proporciona aislamiento de red, además de aislamiento de proceso, a las aplicaciones. Proporciona las máximas posibilidades de escalabilidad horizontal. Solo se seleccionaría un plan de servicio Aislado en el caso de tener una necesidad concreta de los niveles más altos de seguridad y rendimiento.
+
+Aísle la aplicación en un nuevo plan de App Service en los siguientes casos:
+
+* La aplicación consume muchos recursos
+* Quiere escalar la aplicación independientemente de las demás aplicaciones del plan existente
+* La aplicación necesita recursos de otra región geográfica
+
+Puede escalar el plan de App Service o reducir verticalmente en cualquier momento. Puede elegir un plan de tarifa inferior al principio y escalar verticalmente más adelante cuando necesite más características de App Service.
+
+#### Especificación del grupo de recursos
+
+Un grupo de recursos es un contenedor lógico en el que se implementan y administran recursos de Azure como aplicaciones web, bases de datos y cuentas de almacenamiento. Es un mecanismo para organizar los recursos con el fin de administrarlos, supervisarlos y facturarlos. Puede usar un grupo de recursos existente o crear uno directamente desde Visual Studio.
+
+### Ejercicio: Publicación de una aplicación ASP.NET desde Visual Studio
+
+Para completar este módulo, se necesita un espacio aislado. Un [espacio aislado](https://learn.microsoft.com/en-us/training/support/faq?pivots=sandbox) te da acceso a recursos gratuitos. La suscripción personal no se te cobrará. El espacio aislado solo se puede usar para realizar los cursos de Microsoft Learn. Está prohibido el uso con cualquier otro fin y puede dar lugar a la pérdida permanente del acceso al espacio aislado.
+
+Microsoft proporciona esta experiencia de laboratorio y contenido relacionado con fines educativos. Toda la información presentada es propiedad de Microsoft y está destinada únicamente a aprender sobre los productos y servicios cubiertos en este módulo de Microsoft Learn.
+
+Tiene una aplicación web ASP.NET Core que se ejecuta localmente. En este ejercicio, publicará la aplicación en Azure App Service
+
+#### Publicación de la aplicación web ASP.NET Core en Azure
+
+1. En el Explorador de soluciones, haga clic con el botón derecho en el proyecto **AlpineSkiHouse** y seleccione  **Publicar** .
+2. En el cuadro de diálogo que aparece, seleccione **Azure** como destino de publicación y, después, seleccione **Siguiente** para continuar.
+3. Seleccione **Azure App Service (Windows)** y después **Siguiente** para continuar.
+   Sugerencia
+
+   Las aplicaciones ASP.NET Core son multiplataforma. Esto significa que admiten la ejecución en la versión para Linux de App Service sin cambios de código. Pero la versión de Linux no es compatible con un modelo de hospedaje compartido, por lo que para este ejercicio se usará App Service de Windows.
+4. En la lista desplegable  **Suscripción** , seleccione  **Suscripción de Concierge** .
+5. Cerca del borde inferior del cuadro de diálogo, seleccione el vínculo **Crear una instancia de Azure App Service** para abrir el cuadro de diálogo  **App Service (Windows)** .
+
+#### Configuración de la nueva instancia de Azure App Service
+
+1. Si aún no ha iniciado sesión, inicie sesión en Visual Studio con la cuenta que está usando con Microsoft Learn.
+2. Escriba la información necesaria sobre el plan de App Service.
+
+   * **Nombre** : el nombre de la aplicación. El nombre determina la URL de la aplicación publicada, que será https://<NombreDeLaAplicación>.azurewebsites.net. Debe ser un valor único. Puede ser que tenga que probar varios nombres hasta encontrar uno que sea único.
+   * **Suscripción** : la suscripción de Azure en la que quiere implementar la aplicación. Seleccione  **Suscripción de Concierge** , que se proporciona mediante el espacio aislado.
+   * **Grupo de recursos:** seleccione el grupo de recursos [nombre del grupo de recursos del espacio aislado] existente.
+   * **Plan de hospedaje** : el plan de hospedaje especifica la ubicación, el tamaño y las características de la granja de servidores web que hospeda la aplicación. Para este ejercicio, cree un plan de hospedaje.
+     Seleccione **Nuevo** junto al plan de hospedaje. En la ventana Configurar un plan de hospedaje que aparece, cambie **Tamaño** a **Compartido** y seleccione  **Aceptar** .
+3. Seleccione **Crear** para crear el recurso de App Service en Azure. Esta acción tardará varios segundos en completarse.
+4. Transcurridos unos segundos, desaparecerá la ventana del cuadro de diálogo  **App Service (Windows)** . La nueva instancia de App Service se muestra en la lista de recursos de App Service en el cuadro de diálogo  **Publicar** . Seleccione **Finalizar** para terminar de crear el perfil de publicación. El cuadro de diálogo **Publicar** desaparecerá.
+5. El nuevo perfil de publicación aparece en la lista desplegable situada junto a la parte superior de la página de propiedades. Seleccione **Publicar** para publicar la aplicación web en App Service.
+6. Enhorabuena. Cuando vea un mensaje *Publicar correctamente* en la ventana  **Salida** , la aplicación web de ASP.NET Core ahora está publicada y activa. La dirección URL final del sitio está en la salida de la compilación y también en la página de publicación en Visual Studio.
+7. Para probar el sitio web, vaya a la dirección URL indicada. Visual Studio también puede iniciar automáticamente esta dirección URL.
+   ![Sitio activo.](https://learn.microsoft.com/es-es/training/modules/publish-azure-web-app-with-visual-studio/media/5-webpagelive.png)
+   Nota
+
+   Si no puede encontrar la dirección URL de la salida, vaya a https://<NombreDeLaAplicación>.azurewebsites.net, donde <NombreDeLaAplicación> es el nombre que ha proporcionado antes. Por ejemplo,  **"https://alpineskihouse123.azurewebsites.net/"** .
+
+Ahora tiene una aplicación web activa. Se ha creado un plan de Azure App Service, y la aplicación está en ejecución y lista para aceptar actualizaciones.
+
+### Exploración del proyecto de aplicación de Visual Studio
+
+Ha creado correctamente la aplicación web y la ha publicado en Azure pero, ¿qué ocurre cuando quiere realizar cambios? Visual Studio recuerda dónde se ha publicado la aplicación, de modo que actualizarla o modificarla es un proceso sencillo.
+
+#### Exploración de la estructura del proyecto
+
+Ha creado una aplicación web de ASP.NET Core en Visual Studio y ahora tendrá que editar y personalizar el sitio web. Se examinará la estructura del proyecto para ver lo que Visual Studio ha creado.
+
+#### Dependencias
+
+La carpeta de dependencias incluye los aspectos internos de ASP.NET Core para que la aplicación funcione. A menos que vaya a agregar paquetes de terceros específicos, no tendrá que pasar mucho tiempo en esta carpeta.
+
+#### Propiedades
+
+La carpeta de propiedades contiene datos de configuración de donde se va a hospedar la aplicación web. Si expande ahora la carpeta  **PublishProfiles** , verá la dirección URL del sitio de Alpine Ski Hill. Cada perfil de publicación es un archivo .xml que contiene información de configuración de publicación, como la dirección de Azure que usa Visual Studio para cargar los archivos.
+
+#### wwwroot
+
+El archivo wwwroot contiene todos los recursos estáticos del sitio, como css, js, imágenes y archivos lib. Cuando esté listo para cambiar el estilo y agregar más funcionalidad a su sitio, trabajará aquí.
+
+#### Páginas
+
+En la carpeta **Pages** se incluyen plantillas de ***Razor*** para las páginas del sitio. Razor es una sintaxis de marcado para insertar código de servidor en páginas web de ASP.NET. Incluye HTML y tiene convenciones especiales para mostrar datos y ejecutar lógica en el sitio.
+
+Cada página del sitio se representa con dos archivos de código:
+
+* Un archivo `.cshtml`, que es el archivo de marcado de Razor. Este archivo contiene el código HTML de visualización y algo de lógica de C#.
+* Un archivo `.cs`, que es el código subyacente de C# que hereda de la clase `PageModel`. Este archivo permite interceptar solicitudes HTTP y realizar cierto procesamiento en ellas antes de pasar los datos al archivo de Razor.
+
+#### appsetting.json
+
+Es un archivo de configuración de ASP.NET Core.
+
+#### Program.cs
+
+El archivo Program.cs configura e inicia el host web del sitio.
+
+#### Introducción a las plantillas de Razor
+
+Queremos hacer algunos cambios básicos en nuestro sitio web. Deberá tener un conocimiento básico de cómo sacar provecho de las plantillas de Razor para personalizar la aplicación web.
+
+#### ¿Qué es Razor?
+
+Razor es una sintaxis ASP.NET que se usa para crear páginas web dinámicas con C#. Cuando un servidor lee una página de Razor, el código de C# se ejecuta antes de representar el HTML. Esto le permite generar contenido dinámico rápidamente.
+
+Razor usa directivas `@` para indicar a ASP.NET cómo procesar una página.
+
+Por ejemplo, eche un vistazo al código de la página `Privacy.cshtml`:
+
+**ASP.NET (C#)**
+
+```
+@page
+@model PrivacyModel
+@{
+    ViewData["Title"] = "Privacy Policy";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>Use this page to detail your site's privacy policy.</p>
+```
+
+* Por ejemplo, la directiva `@page` le dice a ASP.NET que procese este archivo como una página de Razor.
+* La directiva `@model` le dice a ASP.NET que enlace esta página de Razor con una clase de C# llamada `PrivacyModel`.
+
+Razor usa también el símbolo `@` para realizar la transición entre el código y HTML. Si examina el fragmento de código anterior, observará `@{ ... }`. Se trata de un  **bloque de código de Razor** , que se  *ejecuta pero no se representa* .
+
+Para representar el resultado de una instrucción de código, se usa `@` delante de una expresión de C#. Hay un ejemplo en el bloque de código anterior, en la etiqueta `<h1>`.
+
+La creación y publicación de un sitio web son solo los primeros pasos para crear un buen sitio web. Una vez que empiece a agregar contenido, deberá actualizar el sitio. Una vez que haya publicado el sitio en Azure, podrá actualizarlo en cualquier momento.
+
+### Ejercicio: Publicación de una actualización en el sitio
+
+La aplicación web Alpine Ski House está lista y en ejecución, pero ahora se la debe mostrar a su jefe. Va a tener que actualizar el sitio y publicar esas actualizaciones en Azure.
+
+#### Actualización de la aplicación web
+
+#### Reemplazar el código reutilizable
+
+1. En la carpeta  **Páginas** , abra el archivo  **Privacy.cshtml** .
+2. En la parte inferior del código, busque `<p>Use this page to detail your site's privacy policy.</p>`.
+3. Reemplace el texto reutilizable por `<p>Welcome to the Alpine Ski House!</p>`.
+4. Guarde el archivo.
+5. Abra el archivo  **Index.cshtml** .
+6. Reemplace el contenido de las etiquetas `<p>` para que indique **Alpine Ski House is the premier ski hill in Northeast!**
+7. Guarde el archivo.
+
+#### Publicar las actualizaciones
+
+1. En el Explorador de soluciones, haga clic con el botón derecho en el proyecto.
+2. Seleccione  **Publicar** . Se debería abrir una nueva pestaña denominada  **AlpineSkiHouse** .
+3. Seleccione el botón **Publicar** para implementar los cambios más recientes.
+
+#### Ver los cambios
+
+Una vez que haya publicado los cambios, Visual Studio abrirá el sitio en el explorador. Ahora debería ver los nuevos mensajes en la página principal y la de privacidad.
+
+Enhorabuena, la aplicación web se ha actualizado correctamente desde Visual Studio 2022.
+
+### Resumen
+
+En este módulo, ha creado una aplicación web ASP.NET desde cero y, después, la ha publicado directamente en Azure desde Visual Studio. Ha creado una aplicación de App Service, la ha actualizado y ha publicado los cambios, todo desde Visual Studio.
+
+Visual Studio y Azure App Service proporcionan un mecanismo eficaz para crear, publicar y mantener aplicaciones web en Azure. Con esta combinación de simplicidad y capacidad de administración, mantener actualizadas las aplicaciones web en Azure se convierte en un proceso sencillo.
+
+#### Limpieza
+
+El espacio aislado limpia los recursos automáticamente cuando haya terminado con este módulo.
+
+Al trabajar en una suscripción propia, se recomienda identificar al final de un proyecto si aún necesita los recursos creados. Los recursos que deja en ejecución pueden costar dinero. Puede eliminar los recursos de forma individual o eliminar el grupo de recursos para eliminar todo el conjunto de recursos.
