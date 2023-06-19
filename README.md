@@ -4401,3 +4401,842 @@ Después, ha aprendido a actualizar las dependencias. Las dependencias se actual
 * Examine los paquetes disponibles en [NuGet](https://www.nuget.org/).
 * Consulte el [sitio web de .NET](https://dot.net/) para informarse sobre todo lo relacionado con .NET.
 * Pruebe [Visual Studio Code](https://code.visualstudio.com/) para editar texto y archivos de código.
+
+## Depuración interactiva de aplicaciones .NET con el depurador de Visual Studio Code
+
+Aprenda a depurar de forma eficaz una aplicación .NET con Visual Studio Code para corregir los errores rápidamente.
+
+### Introducción
+
+Como dijo Edsger Dijkstra:
+
+> "Si la depuración es el proceso de eliminar errores, la programación será el proceso de incluirlos".
+
+En este módulo, aprenderá a depurar programas de .NET de forma eficaz. Cuanto más rápido pueda buscar e identificar errores, más rápido podrá conseguir que el código tenga un estado operativo. Dedicará menos tiempo a intentar descubrir por qué el código funcionaba hace cinco segundos, pero ahora no.
+
+#### Objetivos de aprendizaje
+
+Al término de este módulo, sabrá hacer lo siguiente:
+
+* Usar el depurador de Visual Studio Code con un programa de .NET.
+* Crear puntos de interrupción y ejecutar el código paso a paso para detectar problemas
+* Inspeccionar el estado del programa en cualquier paso de ejecución
+* Rebobinar la pila de llamadas para buscar el origen de una excepción
+
+En última instancia, podrá encontrar errores de forma eficaz en los programas de .NET y ya no tendrá que depender de `Console.WriteLine`.
+
+#### Requisitos previos
+
+Instalaciones locales del [SDK de .NET](https://dotnet.microsoft.com/download), [Visual Studio Code](https://code.visualstudio.com/) y la [extensión de C#](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) para Visual Studio Code.
+
+### ¿Qué es un depurador?
+
+Durante su trabajo como desarrollador, es inevitable que en algún momento se pregunte:
+
+> ¿Por qué no funciona el código?
+
+Esta es una parte normal del día a día de cualquier desarrollador. El truco es familiarizarse con la búsqueda y la corrección de los errores para que no se convierta en una actividad frustrante y pesada. Cuando se produce un error en un programa, cada persona aborda la situación de una manera diferente. Probablemente ya haya intentado uno o varios de estos enfoques de depuración:
+
+* Intentar volver a ejecutar el programa, porque *debería* funcionar.
+* Explicarle el problema a un amigo imaginario.
+* Volver a leer el código para averiguar cuál es el problema.
+* Ir a dar un paseo.
+* Enviar algunos mensajes de correo no deseado `Console.WriteLine("here")` en el código.
+
+Es posible que estos métodos solo funcionen hasta cierto punto. Hay un enfoque que se suele considerar más efectivo: usar un depurador. Pero ¿qué es un depurador exactamente?
+
+Un depurador es una herramienta de software que se usa para observar y controlar el flujo de ejecución de un programa desde una perspectiva analítica. Su objetivo de diseño consiste en detectar la causa principal de un error y ayudar a resolverlo. Para ello, hospeda el programa en su propio proceso de ejecución, o bien lo ejecuta como un proceso independiente que está asociado al programa en ejecución, como .NET.
+
+Hay diferentes tipos de depuradores. Algunos funcionan directamente desde la línea de comandos, mientras que otros tienen una interfaz gráfica de usuario. En este módulo, se usará el depurador gráfico integrado de Visual Studio Code.
+
+#### ¿Por qué usar un depurador?
+
+Si no ejecuta el código a través de un depurador, significa que probablemente esté *adivinando* lo que ocurre en el programa. La principal ventaja de usar un depurador es que puede *ver* cómo se ejecuta el programa. Puede seguir línea a línea la ejecución del programa. De esta manera evitará equivocarse.
+
+Cada depurador tiene su propio conjunto de características. Las dos más importantes que se incluyen con casi todos son las siguientes:
+
+* Control de la ejecución del programa. Puede pausar el programa y ejecutarlo paso a paso, lo que le permite ver qué código se ejecuta y cómo afecta al estado del programa.
+* Observación del estado del programa. Por ejemplo, puede examinar el valor de las variables y los parámetros de función en cualquier momento durante la ejecución del código.
+
+El dominio del uso del depurador es una habilidad importante para un desarrollador, pero se suele pasar por alto. Le hace más eficaz a la hora de buscar errores en el código y puede ayudarle a comprender rápidamente el funcionamiento de un programa.
+
+Lo trataremos en la próxima unidad.
+
+### Descripción del depurador de .NET en Visual Studio Code
+
+En la unidad anterior, aprendió que un depurador le ayuda a controlar la ejecución del programa y observar su estado. En esta sección, aprenderá a hacer ambas tareas en Visual Studio Code.
+
+Comencemos por aprender a configurar el depurador de Visual Studio Code para usarlo con .NET.
+
+#### Configuración de Visual Studio Code para la depuración de .NET
+
+La primera vez que abra un archivo de C# en Visual Studio Code, recibirá un aviso para instalar las extensiones recomendadas para C#.
+
+![Captura de pantalla del aviso de Visual Studio Code para instalar la extensión de C#.](https://learn.microsoft.com/es-es/training/modules/dotnet-debug/media/install-recommended-extensions.png)
+
+Visual Studio Code instalará la extensión de **C#** y mostrará otro aviso para agregar los recursos necesarios para compilar y depurar el proyecto.
+
+![Captura de pantalla del aviso de Visual Studio Code para agregar los recursos necesarios para compilar y depurar el proyecto de .NET](https://learn.microsoft.com/es-es/training/modules/dotnet-debug/media/install-required-assets.png)
+
+ Nota
+
+La compatibilidad con el lenguaje C# en Visual Studio Code es una [instalación de Marketplace](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) opcional. Si aún no lo ha hecho, Visual Studio Code le pedirá automáticamente que instale esta extensión cuando abra un archivo de C#. Si tiene problemas para compilar o depurar la aplicación .NET en Visual Studio Code, debe [comprobar que el proyecto tenga los recursos necesarios](https://code.visualstudio.com/docs/languages/csharp#_im-missing-required-assets-to-build-and-debug-c-in-vs-code-my-debugger-says-no-configuration) para la compatibilidad con el lenguaje C#.
+
+#### Puntos de interrupción
+
+Como aprendió en la unidad anterior, un depurador le ayuda a analizar y controlar la ejecución del programa. Al iniciar el depurador de Visual Studio Code, comienza a ejecutarse el código inmediatamente. Dado que el código se ejecuta rápidamente, debe poder pausar el programa en cualquier instrucción. Para ello, usará  *puntos de interrupción* .
+
+Puede agregar un punto de interrupción en Visual Studio Code haciendo clic en el lado izquierdo del número de línea, en la línea que quiera interrumpir. Verá un círculo de color rojo después de habilitar el punto de interrupción. Para quitarlo, simplemente vuelva a seleccionar el círculo rojo.
+
+![Captura de pantalla de un punto de interrupción agregado en la ventana del editor de Visual Studio Code.](https://learn.microsoft.com/es-es/training/modules/dotnet-debug/media/breakpoint.png)
+
+Si hace clic con el botón derecho para agregar un punto de interrupción, también puede seleccionar la opción  **Agregar punto de interrupción condicional** . Se trata de un tipo especial de punto de interrupción que permite especificar una *condición* para interrumpir la ejecución. Este punto de interrupción solo estará activo cuando se cumpla la condición especificada. También puede modificar un punto de interrupción existente si hace clic en él con el botón derecho y selecciona  **Editar punto de interrupción** .
+
+![Captura de pantalla de la configuración de un punto de interrupción condicional en Visual Studio Code.](https://learn.microsoft.com/es-es/training/modules/dotnet-debug/media/conditional-breakpoint.png)
+
+#### Información general del depurador de Visual Studio Code
+
+Después de configurar los puntos de interrupción e iniciar la aplicación, en la pantalla aparecen nuevos paneles de información y controles.
+
+![Captura de pantalla de la información general del depurador de Visual Studio Code.](https://learn.microsoft.com/es-es/training/modules/dotnet-debug/media/debugger-overview.png)
+
+1. Controles de inicio del depurador
+2. Estado de las variables
+3. Estado de las variables inspeccionadas
+4. Pila de llamadas actual
+5. Puntos de interrupción
+6. Controles de ejecución
+7. Paso de ejecución actual
+8. Consola de depuración
+
+#### Controles de inicio del depurador
+
+En la parte superior de la barra lateral, encontrará los controles de inicio:
+
+![Captura de pantalla de los controles de la barra lateral del depurador de Visual Studio Code.](https://learn.microsoft.com/es-es/training/modules/dotnet-debug/media/sidebar-controls.png)
+
+1. Inicie la depuración.
+2. Seleccione la configuración de inicio activa.
+3. Edite el archivo `launch.json`. Créelo si es necesario.
+4. Abra el terminal de depuración.
+
+#### Visualización y edición del estado de las variables
+
+Al analizar la causa de un defecto del programa, consulte el estado de las variables en busca de cambios inesperados. Puede usar el panel **Variables** para hacerlo.
+
+Las variables se muestran organizadas por ámbito:
+
+* Las **variables locales** son aquellas a las que se puede acceder en el ámbito actual, normalmente la función actual.
+* Las **variables globales** son aquellas a las que se puede acceder desde cualquier parte del programa. También se incluyen los objetos del sistema del entorno de ejecución de JavaScript, por lo que no debe sorprenderse si aquí ve una gran cantidad de elementos.
+* Las **variables de clausura** son aquellas a las que se accede desde la clausura actual, si hay alguna. Una clausura combina el ámbito local de una función con el ámbito de la función externa a la que pertenece.
+
+Puede desplegar los ámbitos y las variables seleccionando la flecha. Al desplegar objetos, puede ver todas las propiedades definidas en el objeto.
+
+Es posible cambiar el valor de una variable sobre la marcha haciendo doble clic en ella.
+
+Al mantener el puntero sobre un parámetro de función o una variable directamente en la ventana del editor, también podrá inspeccionar su valor.
+
+![Captura de pantalla del puntero mantenido sobre una variable durante la depuración.](https://learn.microsoft.com/es-es/training/modules/dotnet-debug/media/variable-hover.png)
+
+#### Inspección de variables
+
+Si quiere realizar el seguimiento del estado de una variable en el tiempo o en distintas funciones, puede resultar tedioso hacer una búsqueda de cada vez. Por eso resulta tan útil el panel  **Inspección** .
+
+Puede seleccionar el botón **más** para escribir un nombre de variable o una expresión que quiera inspeccionar. Otra opción es hacer clic con el botón derecho en una variable en el panel **Variables** y seleccionar  **Agregar a inspección** .
+
+Todas las expresiones que se encuentran dentro del panel de inspección se actualizarán automáticamente a medida que se ejecute el código.
+
+#### Pila de llamadas
+
+Cada vez que el programa especifique una función, se agregará una entrada a la pila de llamadas. Cuando la aplicación se vuelva compleja y se llame a funciones dentro de otras funciones de forma repetida, la pila de llamadas representará el rastro de las llamadas a las funciones.
+
+Esto resulta útil para buscar el origen de una excepción. Si se produce un bloqueo inesperado en el programa, verá algo parecido al ejemplo siguiente en la consola:
+
+**text**
+
+```
+Unhandled exception. System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at OrderProcessor.OrderQueue.ProcessNewOrders(String[] orderIds) in C:\Users\Repos\OrderProcessor\OrderQueue.cs:line 12
+   at OrderProcessor.Program.Main(String[] args) in C:\Users\Repos\OrderProcessor\Program.cs:line 9
+```
+
+El grupo de líneas `at [...]` situado debajo del mensaje de error se denomina  *seguimiento de la pila* . Proporciona el nombre y el origen de cada función a la que se ha llamado antes de terminar con la excepción. Sin embargo, puede ser algo difícil de descifrar, ya que también incluye funciones internas del entorno de ejecución de .NET.
+
+Aquí es donde resulta práctico el panel **Pila de llamadas** de Visual Studio Code. Filtra la información no deseada y le muestra solo las funciones pertinentes de su código de forma predeterminada. Después, puede desenredar esta pila de llamadas para averiguar dónde se originó la excepción.
+
+#### Puntos de interrupción
+
+En el panel  **Puntos de interrupción** , puede ver todos los puntos de interrupción que haya colocado en el código y alternar entre ellos. También puede alternar entre las opciones para interrumpir las excepciones, tanto las detectadas como las no detectadas. Puede usar el panel **Puntos de interrupción** para examinar el estado del programa y localizar el origen de una excepción cuando se produzca mediante la  **pila de llamadas** .
+
+#### Control de la ejecución
+
+Puede controlar el flujo de ejecución del programa mediante estos controles.
+
+![Captura de pantalla de los controles de ejecución del depurador de Visual Studio Code.](https://learn.microsoft.com/es-es/training/modules/dotnet-debug/media/debugger-controls.png)
+
+Estos son los controles, de izquierda a derecha:
+
+* **Continuar o pausar la ejecución** . Si la ejecución está en pausa, continuará hasta que se alcance el siguiente punto de interrupción. Si el programa se está ejecutando, el botón se convertirá en un botón de pausa que puede usar para pausar la ejecución.
+* **Depurar paso a paso por procedimientos** . Ejecuta la siguiente instrucción de código en el contexto actual.
+* **Depurar paso a paso por instrucciones** . Es igual que  **Depurar paso a paso por procedimientos** , pero, si la siguiente instrucción es una llamada de función, pasa a la primera instrucción de código de esta función (igual que el comando `step`).
+* **Salir de la depuración** . Si está dentro de una función, ejecuta el código restante de esta y vuelve a la instrucción después de la llamada de función inicial (igual que el comando `out`).
+* **Reiniciar** . Reinicia el programa desde el principio.
+* **Detener** . Finaliza la ejecución y sale del depurador.
+
+#### Uso de la consola de depuración
+
+Puede mostrar u ocultar la consola de depuración; para ello, seleccione **Ctrl+Mayús+Y** para Windows y Linux. En Mac, presione  **Cmd+Mayús+Y** . Puede usar la consola de depuración para visualizar los registros de la consola de la aplicación. También puede usarla para evaluar expresiones o ejecutar código en el contenido de ejecución actual, como comandos o nombres de variables en el depurador integrado de .NET.
+
+Puede escribir una expresión de .NET en el campo de entrada en la parte inferior de la consola de depuración y presionar **ENTRAR** para evaluarla. El resultado se muestra directamente en la consola.
+
+![Captura de pantalla de la pestaña de depuración de Visual Studio Code.](https://learn.microsoft.com/es-es/training/modules/dotnet-debug/media/debug-console.png)
+
+Mediante el uso de la consola de depuración, puede comprobar rápidamente el valor de una variable, probar una función con valores diferentes o modificar el estado actual.
+
+ Nota
+
+Aunque la consola de depuración es muy útil para ejecutar y evaluar código .NET, puede ser un poco confusa al intentar ejecutar o depurar una aplicación de consola de .NET. El motivo es que la consola de depuración no acepta la entrada de terminal de un programa en ejecución.
+
+Para controlar la entrada de terminal durante la depuración, puede usar el terminal integrado (una de las ventanas de Visual Studio Code) o un terminal externo. En este tutorial, usará el terminal integrado.
+
+1. Abra  *.vscode/launch.json* .
+2. Cambie la configuración de `console` a `integratedTerminal`. De:
+   **JSON**
+
+   ```
+   "console": "internalConsole",
+   ```
+
+   A:
+
+   **JSON**
+
+   ```
+   "console": "integratedTerminal",
+   ```
+3. Guarde los cambios.
+
+En la siguiente unidad, aprenderá a usar el depurador para corregir el error en el código de Fibonacci que vimos anteriormente.
+
+### Ejercicio: Depuración con Visual Studio Code
+
+Es el momento de poner en práctica todo lo que acaba de aprender sobre la depuración. Es su primer día del trabajo, y es el momento de poner en práctica sus conocimientos sobre la depuración de .NET corrigiendo un error en el producto insignia de la empresa, una calculadora de Fibonacci.
+
+#### Creación de un proyecto de .NET de ejemplo para la depuración
+
+Para configurar Visual Studio Code para la depuración de .NET, primero se necesita un proyecto de .NET. Visual Studio Code incluye un terminal integrado que facilita la creación de un proyecto.
+
+1. En Visual Studio Code, seleccione  **Archivo** > **Abrir carpeta** .
+2. Cree una carpeta denominada `DotNetDebugging` en la ubicación que quiera. Después, elija  **Seleccionar carpeta** .
+3. Abra el terminal integrado desde Visual Studio Code; para ello, seleccione  **Ver** >**Terminal** en el menú principal.
+4. En la ventana del terminal, copie y pegue el siguiente comando:
+   **CLI de .NET**
+
+   ```
+   dotnet new console
+   ```
+
+   Este comando crea un archivo **Program.cs** en la carpeta con un programa "Hola mundo" básico que ya está escrito. También crea un archivo de proyecto de C# denominado  **DotNetDebugging.csproj** .
+5. En la ventana del terminal, copie y pegue el siguiente comando para ejecutar el programa "Hola mundo".
+   **CLI de .NET**
+
+   ```
+   dotnet run
+   ```
+
+   En la ventana del terminal se muestra "Hola mundo" como salida.
+
+   ![Captura de pantalla de Visual Studio Code con una nueva aplicación de consola.](https://learn.microsoft.com/es-es/training/modules/dotnet-debug/media/new-dotnet-project.png)
+
+#### Configuración de Visual Studio Code para la depuración de .NET
+
+1. Para abrir  **Program.cs** , selecciónelo.
+2. La primera vez que abra un archivo de C# en Visual Studio Code, recibirá un aviso para instalar las extensiones recomendadas para C#. Si ve este aviso, haga clic en el botón **Instalar** que se muestra.
+   ![Captura de pantalla del aviso de Visual Studio Code para instalar la extensión de C#.](https://learn.microsoft.com/es-es/training/modules/dotnet-debug/media/install-recommended-extensions.png)
+3. Visual Studio Code instalará la extensión de **C#** y mostrará otro aviso para agregar los recursos necesarios a fin de compilar y depurar el proyecto. Haga clic en el botón  **Sí** .
+   ![Captura de pantalla del aviso de Visual Studio Code para agregar los recursos necesarios para compilar y depurar el proyecto de .NET](https://learn.microsoft.com/es-es/training/modules/dotnet-debug/media/install-required-assets.png)
+4. Puede cerrar la pestaña **Extensión: C#** para centrarse en el código que va a depurar.
+
+#### Adición de la lógica del programa de Fibonacci
+
+Nuestro proyecto actual escribe un mensaje "Hola mundo" en la consola, lo que no nos proporciona mucho para depurar. Así que, va a usar un pequeño programa .NET para calcular el número *enésimo* de la secuencia de Fibonacci.
+
+La secuencia de Fibonacci es un conjunto de números que empiezan por el 0 y el 1, y cada uno de los siguientes es la suma de los dos anteriores. La secuencia continúa así:
+
+**text**
+
+```
+0, 1, 1, 2, 3, 5, 8, 13, 21...
+```
+
+1. Para abrir  **Program.cs** , selecciónelo.
+2. Reemplace el contenido de **Program.cs** por el código siguiente:
+   **C#**
+
+   ```
+   int result = Fibonacci(5);
+   Console.WriteLine(result);
+
+   static int Fibonacci(int n)
+   {
+       int n1 = 0;
+       int n2 = 1;
+       int sum;
+
+       for (int i = 2; i < n; i++)
+       {
+           sum = n1 + n2;
+           n1 = n2;
+           n2 = sum;
+       }
+
+       return n == 0 ? n1 : n2;
+   }
+   ```
+
+   Nota
+
+   Este código contiene un error que depuraremos más adelante en este módulo. No se recomienda usarlo en las aplicaciones de Fibonacci críticas hasta que se solucione el error.
+3. Presione **CTRL+S** para guardar el archivo en Windows y Linux. En equipos Mac, presione  **Cmd+S** .
+4. Echemos un vistazo a cómo funciona el código actualizado antes de depurarlo. Ejecute el programa mediante la escritura del siguiente comando en el terminal:
+   **CLI de .NET**
+
+   ```
+   dotnet run
+   ```
+
+   ![Ventana del terminal con la salida del programa modificada.](https://learn.microsoft.com/es-es/training/modules/dotnet-debug/media/run-modified-program.png)
+5. El resultado, 3, se muestra en la salida del terminal. Al consultar este gráfico de secuencia de Fibonacci que muestra la posición de la secuencia de base cero para cada valor entre paréntesis, verá que el resultado debería haber sido 5. Es el momento de familiarizarse con el depurador y corregir este programa.
+   **text**
+
+   ```
+   0 (0), 1 (1), 1 (2), 2 (3), 3 (4), 5 (5), 8 (6), 13 (7), 21 (8)...
+   ```
+
+#### Análisis de los problemas
+
+1. Seleccione la pestaña **Ejecutar** y haga clic en el botón **Iniciar depuración** para iniciar el programa.
+   ![Captura de pantalla del botón Iniciar depuración en Visual Studio Code.](https://learn.microsoft.com/es-es/training/modules/dotnet-debug/media/start-debugging.png)
+   Debería ver que el programa finaliza rápidamente. Eso es normal porque todavía no ha agregado ningún punto de interrupción.
+2. Si no aparece la consola de depuración, presione **CTRL+Mayús+Y** en Windows y Linux. En Mac, presione  **Cmd+Mayús+Y** . Verá varias líneas de información de diagnóstico y las siguientes líneas al final:
+   **text**
+
+   ```
+   ...
+   Loaded 'C:\Program Files\dotnet\shared\Microsoft.NETCore.App\6.0.0\System.Threading.dll'. Skipped loading symbols. Module is optimized and the debugger option 'Just My Code' is enabled.
+   Loaded 'C:\Program Files\dotnet\shared\Microsoft.NETCore.App\6.0.0\System.Text.Encoding.Extensions.dll'. Skipped loading symbols. Module is optimized and the debugger option 'Just My Code' is enabled.
+   3
+   The program '[88820] DotNetDebugging.dll' has exited with code 0 (0x0).
+   ```
+
+Las líneas de la parte superior indican que la configuración de depuración predeterminada habilita la opción "Solo mi código". Esto significa que el depurador solo depurará el código y no depurará paso a paso por instrucciones el código fuente de .NET a menos que deshabilite este modo. Esta opción le permite centrarse en la depuración de su código.
+
+Al final de la salida de la consola de depuración, verá que el programa escribe 3 en la consola y, luego, se cierra con el código 0. Normalmente, el código 0 de salida del programa indica que el programa se ejecutó y se cerró sin bloqueos. Sin embargo, hay una diferencia entre que no se bloquee y que se devuelva el valor correcto. En este caso, pedimos al programa que calculara el quinto valor de la secuencia de Fibonacci:
+
+**text**
+
+```
+0 (0), 1 (1), 1 (2), 2 (3), 3 (4), 5 (5), 8 (6), 13 (7), 21 (8)...
+```
+
+El quinto valor de esta lista es 5, pero el programa devolvió 3. Vamos a usar el depurador para diagnosticar y corregir este error.
+
+#### Uso de puntos de interrupción y de la ejecución paso a paso
+
+1. Para agregar un punto de interrupción, haga clic en el margen izquierdo de la línea **1** en `int result = Fibonacci(5);`.
+   ![Captura de pantalla de la ubicación del punto de interrupción en el código.](https://learn.microsoft.com/es-es/training/modules/dotnet-debug/media/breakpoint.png)
+2. Vuelva a comenzar la depuración. El programa comenzará a ejecutarse Se interrumpirá (pausará la ejecución) en la línea 1 debido al punto de interrupción establecido. Use los controles del depurador para depurar paso a paso por instrucciones la función `Fibonacci()`.
+   ![Captura de pantalla del botón para depurar paso a paso por instrucciones.](https://learn.microsoft.com/es-es/training/modules/dotnet-debug/media/step-into.png)
+
+#### Comprobación del estado de las variables
+
+Ahora, dedique tiempo a inspeccionar los valores de las diferentes variables mediante el panel  **Variables** .
+
+![Captura de pantalla del panel Variables.](https://learn.microsoft.com/es-es/training/modules/dotnet-debug/media/variables-panel.png)
+
+* ¿Cuál es el valor que se muestra para el parámetro `n`?
+* Al principio de la ejecución de la función, ¿cuáles son los valores de las variables locales `n1`, `n2` y `sum`?
+
+1. A continuación, avanzaremos al bucle `for` mediante el control del depurador  **Paso a paso por procedimientos** .
+   ![Captura de pantalla del botón para depurar paso a paso por procedimientos.](https://learn.microsoft.com/es-es/training/modules/dotnet-debug/media/step-over.png)
+2. Continúe avanzando hasta llegar a la primera línea dentro del bucle `for`, en la línea que dice:
+   **C#**
+
+   ```
+   sum = n1 + n2;
+   ```
+
+ Nota
+
+Es posible que haya observado que para desplazarse por la línea `for(...) {}` se necesitan varios comandos de depuración paso a paso por instrucciones. Esta situación se produce porque en esta línea hay varias  *instrucciones* . Al realizar una depuración paso a paso, se pasa a la siguiente instrucción del código. Normalmente, hay una instrucción por línea. Si no es así, se necesitan varios pasos para ir a la línea siguiente.
+
+#### Reflexión sobre el código
+
+Una parte importante de la depuración es detenerse y hacer algunas suposiciones fundamentadas sobre lo que cree que las partes del código (funciones y bloques, como los bucles) intentan hacer. No pasa nada si no está seguro, esa incertidumbre forma parte del proceso de depuración. Sin embargo, participar activamente en el proceso de depuración le ayudará a encontrar los errores con mayor rapidez.
+
+Antes de profundizar más, recuerde que la secuencia de Fibonacci es una serie de números que comienzan por el 0 y el 1, y cada uno de los números siguientes es la suma de los dos anteriores.
+
+Esto significa que:
+
+**text**
+
+```
+Fibonacci(0) = 0
+Fibonacci(1) = 1
+Fibonacci(2) = 1 (0 + 1)
+Fibonacci(3) = 2 (1 + 1)
+Fibonacci(4) = 3 (1 + 2)
+Fibonacci(5) = 5 (2 + 3)
+```
+
+Si entendemos esa definición y examinamos este bucle `for`, podemos deducir que:
+
+1. El bucle cuenta de 2 a `n` (el número de secuencia de Fibonacci que buscamos).
+2. Si `n` es menor que 2, el bucle nunca se ejecutará. La instrucción `return` al final de la función devolverá 0 si `n` es 0 y 1 si `n` es 1 o 2. Estos son, por definición, los valores cero, primero y segundo de la serie de Fibonacci.
+3. El caso más interesante es cuando `n` es mayor que 2. En esos casos, el valor actual se define como la suma de los dos valores anteriores. Por lo tanto, para este bucle, `n1` y `n2` son los dos valores anteriores y `sum` es el valor de la iteración actual. Por eso, cada vez que se calcule la suma de los dos valores anteriores y se establezca en `sum`, se actualizarán los valores `n1` y `n2`.
+
+Bien, no es necesario seguir dándole más vueltas a ello; podemos apoyarnos un poco en el depurador. Pero merece la pena pensar en el código para ver si hace lo que esperamos y tener más información para cuando no lo haga.
+
+#### Detección del error con puntos de interrupción
+
+Aunque la ejecución paso a paso del código puede ser útil, también puede resultar tediosa, especialmente cuando se trabaja con bucles u otro código al que se llama repetidamente. En lugar de ejecutar paso a paso el bucle una y otra vez, podemos establecer un nuevo punto de interrupción en la primera línea del bucle.
+
+Cuando hacemos esto, es importante saber dónde colocar estratégicamente nuestros puntos de interrupción. Nos interesa especialmente el valor de `sum`, ya que representa el valor máximo actual de Fibonacci. Por eso, vamos a colocar el punto de interrupción en la línea *después* `sum` de establecerla.
+
+1. Agregue un segundo punto de interrupción en la línea 13.
+   ![Captura de pantalla que muestra el establecimiento de un segundo punto de interrupción.](https://learn.microsoft.com/es-es/training/modules/dotnet-debug/media/breakpoint-in-loop.png)
+   Nota
+
+   Si observa que el código sigue funcionando y, luego, ejecuta una línea o dos, puede actualizar fácilmente los puntos de interrupción a líneas más eficaces.
+2. Ahora que tenemos un buen punto de interrupción establecido en el bucle, use el control del depurador **Continuar** para avanzar hasta el punto de interrupción. Si observamos nuestras variables locales, vemos las siguientes líneas:
+   **text**
+
+   ```
+   n [int]: 5
+   n1 [int]: 0
+   n2 [int]: 1
+   sum [int]: 1
+   i [int]: 2
+   ```
+
+   Todas estas líneas parecen correctas. La primera vez a través del bucle, el valor `sum` de los dos valores anteriores es 1. En lugar de recorrer línea a línea, podemos aprovechar nuestros puntos de interrupción para saltar a la siguiente vez a través del bucle.
+3. Seleccione **Continuar** para continuar el flujo del programa hasta llegar al siguiente punto de interrupción, que estará en el siguiente paso a través del bucle.
+   Nota
+
+   No se preocupe demasiado por omitir el error al usar  **Continuar** . Con frecuencia, tendrá que depurar el código varias veces para hallar el problema. Por lo que a menudo es más rápido recorrerlo varias veces que ser demasiado precavido cuando lo ejecute paso a paso.
+
+   Esta vez, vemos los valores siguientes:
+   **text**
+
+   ```
+   n [int]: 5
+   n1 [int]: 1
+   n2 [int]: 1
+   sum [int]: 2
+   i [int]: 3
+   ```
+
+   Pensemos en ello. ¿Estos valores siguen teniendo sentido? Parece que sí. Para el tercer número de Fibonacci, esperamos ver que `sum` es igual a 2, y así es.
+4. Bien, vamos a seleccionar **Continuar** para volver a crear un bucle.
+   **text**
+
+   ```
+   n [int]: 5
+   n1 [int]: 1
+   n2 [int]: 2
+   sum [int]: 3
+   i [int]: 4
+   ```
+
+   De nuevo, todo parece correcto. Se espera que el cuarto valor de la serie sea 3.
+5. Llegados a este punto, podría empezar a preguntarse si el código estaba realmente bien y se ha imaginado el error. Vamos a seguir con él por última vez a través del bucle. Seleccione **Continuar** una vez más.
+   ¡Un momento! El programa ha terminado de ejecutarse y el resultado ha sido 3. Eso no es correcto.
+   Bien, no hay de qué preocuparse. De los errores se aprende. Ahora sabemos que el código se ejecuta correctamente a través del bucle hasta `i` que es igual a 4, pero después se cierra antes de calcular el valor final. Estoy empezando a tener algunas ideas de dónde se encuentra el error, ¿le pasa lo mismo?
+6. Vamos a establecer un punto de interrupción más en la línea 17, que dice:
+   **C#**
+
+   ```
+   return n == 0 ? n1 : n2;
+   ```
+
+   Este punto de interrupción nos permitirá inspeccionar el estado del programa antes de que se cierre la función. Ya sabemos todo lo que podemos esperar de nuestros puntos de interrupción anteriores de las líneas 1 y 13, así que podemos borrarlos.
+7. Quite los puntos de interrupción anteriores de las líneas 1 y 13. Para eso, haga clic en ellos en el margen situado junto a los números de línea o desactive las casillas de los puntos de interrupción de las líneas 1 y 13 en el panel de puntos de interrupción de la parte inferior izquierda.
+   ![Captura de pantalla que muestra los puntos de interrupción que aparecen en el panel de puntos de interrupción.](https://learn.microsoft.com/es-es/training/modules/dotnet-debug/media/clearing-breakpoints.png)
+   Ahora que entendemos mucho mejor lo que sucede y que hemos establecido un punto de interrupción diseñado para detectar los errores de comportamiento de nuestro programa, deberíamos poder detectar este error.
+8. Inicie el depurador una última vez.
+   **text**
+
+   ```
+   n [int]: 5
+   n1 [int]: 2
+   n2 [int]: 3
+   sum [int]: 3
+   ```
+
+   Bien, eso no es correcto. Hemos pedido específicamente Fibonacci(5) y hemos recibido Fibonacci(4). Esta función devuelve `n2`, y cada iteración del bucle calcula el valor `sum` y establece `n2` igual a `sum`.
+
+   En función de esta información y de la ejecución de depuración anterior, podemos ver que el bucle se cerró cuando `i` era 4, no 5.
+
+   Vamos a detenernos un poco más en la primera línea del bucle `for`.
+
+   **C#**
+
+   ```
+   for (int i = 2; i < n; i++)
+   ```
+
+   Bien, espere un minuto. Eso significa que se cerrará en cuanto la parte superior del bucle "for" vea que `i` ya no es menor que `n`. Esto significa que el código de bucle no se ejecutará en caso de que `i` sea igual a `n`. Parece que nos gustaría que se ejecutara mejor hasta `i <= n`:
+   **C#**
+
+   ```
+   for (int i = 2; i <= n; i++)
+   ```
+
+   Por lo tanto, con ese cambio, el programa actualizado debería tener un aspecto similar al de este ejemplo:
+   **C#**
+
+   ```
+   int result = Fibonacci(5);
+   Console.WriteLine(result);
+
+   static int Fibonacci(int n)
+   {
+       int n1 = 0;
+       int n2 = 1;
+       int sum;
+
+       for (int i = 2; i <= n; i++)
+       {
+           sum = n1 + n2;
+           n1 = n2;
+           n2 = sum;
+       }
+
+       return n == 0 ? n1 : n2;
+   }
+   ```
+9. Detenga la sesión de depuración si aún no lo ha hecho.
+10. Después, realice el cambio anterior en la línea 10 y deje nuestro punto de interrupción en la línea 17.
+11. Reinicie el depurador. Esta vez, cuando se alcance el punto de interrupción en la línea 17, veremos los siguientes valores:
+    **text**
+
+    ```
+    n [int]: 5
+    n1 [int]: 3
+    n2 [int]: 5
+    sum [int]: 5
+    ```
+
+    ¡Vaya! Parece que lo hemos conseguido. Fantástico trabajo, encontró la solución para *Fibonacci, Inc.*
+12. Seleccione **Continuar** solo para asegurarse de que el programa devuelve el valor correcto.
+    **text**
+
+    ```
+    5
+    The program '[105260] DotNetDebugging.dll' has exited with code 0 (0x0).
+    ```
+
+    Y que devuelve la salida correcta.
+
+Lo ha conseguido. Ha depurado parte del código que no ha escrito mediante el depurador de .NET en Visual Studio Code.
+
+En la siguiente unidad, aprenderá a hacer que el código que escriba sea más fácil de depurar mediante las características de registro y seguimiento integradas en .NET.
+
+### Registro y seguimiento en aplicaciones .NET
+
+A medida que continúe desarrollando su aplicación y se haga más compleja, querrá aplicarle diagnósticos de depuración adicionales.
+
+El seguimiento es una manera de supervisar la ejecución de la aplicación mientras se está ejecutando. Puede agregar instrumentación de seguimiento y depuración a la aplicación .NET al desarrollarla. Además, puede usar esa instrumentación mientras desarrolla la aplicación y después de implementarla.
+
+Esta técnica sencilla es sorprendentemente eficaz. Se puede usar en situaciones en las que se necesita más de un depurador:
+
+* Los problemas que se producen durante largos períodos de tiempo pueden ser difíciles de depurar con un depurador tradicional. Los registros permiten una revisión post mortem detallada que abarca largos períodos de tiempo. En cambio, los depuradores están restringidos a análisis en tiempo real.
+* Las aplicaciones multiproceso y las aplicaciones distribuidas a menudo son difíciles de depurar. Adjuntar un depurador tiende a modificar los comportamientos. Los registros detallados se pueden analizar, según sea necesario, para comprender sistemas complejos.
+* Los problemas en las aplicaciones distribuidas pueden surgir de una interacción compleja entre muchos componentes. No suele ser recomendable conectar un depurador a todas las partes del sistema.
+* Muchos servicios no deben estar detenidos. Al adjuntar un depurador a menudo se producen errores de tiempo de expiración.
+* Las incidencias no siempre están previstas. El registro y seguimiento están diseñados para una baja sobrecarga, de modo que los programas siempre pueden grabarse en caso de que se produzca una incidencia.
+
+#### Escritura de información en las ventanas de salida
+
+Hasta este momento, hemos estado usando la consola para mostrar información al usuario de la aplicación. Hay otros tipos de aplicaciones que se compilan con .NET que tienen interfaces de usuario, como aplicaciones móviles, web y de escritorio, y no hay ninguna consola visible. En estas aplicaciones, se usa `System.Console` para registrar los mensajes "en segundo plano". Estos mensajes se pueden mostrar en una ventana de salida de Visual Studio o Visual Studio Code. También pueden generarse en un registro del sistema, como `logcat` de Android. Como resultado, se debe tener mucho cuidado al usar `System.Console.WriteLine` en una aplicación que no es de consola.
+
+Aquí es donde se pueden usar `System.Diagnostics.Debug` y `System.Diagnostics.Trace` además de `System.Console`. Tanto `Debug` como `Trace` forman parte de `System.Diagnostics` y solo escribirán en los registros cuando se asocie un agente de escucha adecuado.
+
+La elección de la API de estilo de impresión que se va a usar depende de usted. Las diferencias clave son:
+
+* **System.Console**
+  * Siempre está habilitada y siempre escribe en la consola.
+  * Resulta útil para la información que el cliente pueda necesitar ver en la versión.
+  * Dado que es el enfoque más sencillo, a menudo se usa para la depuración temporal ad hoc. Este código de depuración a veces no se registra nunca en el control de código fuente.
+* **System.Diagnostics.Trace**
+  * Solo se habilita cuando se define `TRACE`.
+  * Escribe en los agentes de escucha asociados, de forma predeterminada, DefaultTraceListener.
+  * Use esta API cuando cree registros que se habilitarán en la mayoría de las compilaciones.
+* **System.Diagnostics.Debug**
+  * Solo se habilita cuando se define `DEBUG` (en modo de depuración).
+  * Escribe en un depurador adjuntado.
+  * Use esta API cuando cree registros que solo se habilitarán en las compilaciones de depuración.
+
+**C#**
+
+```
+Console.WriteLine("This message is readable by the end user.");
+Trace.WriteLine("This is a trace message when tracing the app.");
+Debug.WriteLine("This is a debug message just for developers.");
+```
+
+Al diseñar su estrategia de seguimiento y depuración, piense en cómo quiere que sea la salida. Varias instrucciones Write con información no relacionada producirán un registro difícil de leer. Por otro lado, usar WriteLine para colocar instrucciones relacionadas en líneas independientes puede hacer que sea difícil distinguir la información del mismo tipo. En general, use varias instrucciones Write cuando quiera combinar información de varios orígenes para crear un único mensaje informativo. Por otro lado, use la instrucción WriteLine cuando quiera crear un único mensaje completo.
+
+**C#**
+
+```
+Debug.Write("Debug - ");
+Debug.WriteLine("This is a full line.");
+Debug.WriteLine("This is another full line.");
+```
+
+Esta salida proviene del registro anterior con `Debug`:
+
+**Resultados**
+
+```
+Debug - This is a full line.
+This is another full line.
+```
+
+#### Definición de las constantes TRACE y DEBUG
+
+De forma predeterminada, cuando una aplicación se ejecuta durante la depuración, se define la constante `DEBUG`. Para controlarlo, se puede agregar una entrada `DefineConstants` en el archivo de proyecto en un grupo de propiedades. Este es un ejemplo de cómo activar `TRACE` para las configuraciones de `Debug` y `Release`, además de `DEBUG` para las configuraciones de `Debug`.
+
+**XML**
+
+```
+<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+</PropertyGroup>
+<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
+</PropertyGroup>
+```
+
+Si usa `Trace` cuando no está asociado al depurador, deberá configurar un agente de escucha de seguimiento, como [dotnet-trace](https://learn.microsoft.com/es-es/dotnet/core/diagnostics/dotnet-trace).
+
+#### Seguimiento condicional
+
+Además de los métodos simples `Write` y `WriteLine`, también existe la funcionalidad para agregar condiciones con `WriteIf` y `WriteLineIf`. A modo de ejemplo, la siguiente lógica comprueba si el recuento es cero y, luego, escribe un mensaje de depuración.
+
+**C#**
+
+```
+if(count == 0)
+{
+    Debug.WriteLine("The count is 0 and this may cause an exception.");
+}
+```
+
+Se podría volver a escribir en una sola línea de código.
+
+**C#**
+
+```
+Debug.WriteLineIf(count == 0, "The count is 0 and this may cause an exception.");
+```
+
+También puede usar estas condiciones con `Trace` y con las marcas que defina en la aplicación.
+
+**C#**
+
+```
+bool errorFlag = false;  
+System.Diagnostics.Trace.WriteIf(errorFlag, "Error in AppendData procedure.");  
+System.Diagnostics.Debug.WriteIf(errorFlag, "Transaction abandoned.");  
+System.Diagnostics.Trace.Write("Invalid value for data request");
+```
+
+#### Comprobación de que determinadas condiciones existen
+
+Una aserción, o instrucción `Assert`, prueba una condición especificada como un argumento de dicha instrucción `Assert`. Si la condición se evalúa como true, no se produce ninguna acción. Si la condición se evalúa como false, se produce un error en la aserción. Si está ejecutando una compilación de depuración, el programa entra en modo de interrupción.
+
+Puede usar el método `Assert` de `Debug` o `Trace`, que se encuentran en el espacio de nombres `System.Diagnostics`. Los métodos de la clase `Debug` no se incluyen en una versión de lanzamiento de su programa, de modo que no aumentan el tamaño ni reducen la velocidad de su código de versión.
+
+Use el método System.Diagnostics.Debug.Assert libremente para probar las condiciones que deben cumplirse si el código es correcto. Por ejemplo, supongamos que ha escrito una función de división de enteros. Según las reglas matemáticas, el divisor nunca puede ser cero. Puede probar esta condición mediante una aserción:
+
+**C#**
+
+```
+int IntegerDivide(int dividend, int divisor)
+{
+    Debug.Assert(divisor != 0, $"{nameof(divisor)} is 0 and will cause an exception.");
+
+    return dividend / divisor;
+}
+```
+
+Al ejecutar este código en el depurador, se evalúa la instrucción de aserción, pero no se realiza la comparación en la versión de lanzamiento, por lo que no hay ninguna sobrecarga adicional.
+
+ Nota
+
+Cuando use `System.Diagnostics.Debug.Assert`, asegúrese de que cualquier código incluido en la instrucción Assert no cambie los resultados del programa si se quita Assert. De lo contrario, podría introducir accidentalmente un error que solo se muestra en la versión de lanzamiento del programa. Tenga especial cuidado con las aserciones que contienen llamadas a funciones o procedimientos.
+
+Como puede ver, el uso de `Debug` y `Trace` del espacio de nombres `System.Diagnostics` es una excelente manera de proporcionar contexto adicional al ejecutar y depurar la aplicación.
+
+### Ejercicio: Registro y seguimiento
+
+Ahora que se ha iniciado el desarrollo de la aplicación, es conveniente agregar más diagnósticos a la lógica para ayudar a los desarrolladores a medida que agregan nuevas características. Para realizar esta tarea, podemos aprovechar nuestros nuevos aprendizajes sobre los diagnósticos de depuración.
+
+### Escritura en la consola de depuración
+
+Antes de depurar la aplicación, vamos a agregar más diagnósticos de depuración. Esto le ayudará a diagnosticar la aplicación mientras se ejecuta durante la depuración.
+
+En la parte superior del archivo `Program.cs`, agregaremos una nueva instrucción `using` para incorporar `System.Diagnostics` de forma que podamos usar los métodos `Debug`.
+
+**C#**
+
+```
+using System.Diagnostics;
+```
+
+Agregue una instrucción `WriteLine` al principio del método `Fibonacci` para una mayor claridad al depurar el código.
+
+**C#**
+
+```
+Debug.WriteLine($"Entering {nameof(Fibonacci)} method");
+Debug.WriteLine($"We are looking for the {n}th number");
+```
+
+Al final de nuestro bucle `for`, podríamos imprimir cada valor. O bien, podríamos usar una instrucción de impresión condicional con `WriteIf` o `WriteLineIf`. Agregue una línea de impresión solo cuando `sum` sea 1 al final del bucle "for".
+
+**C#**
+
+```
+for (int i = 2; i <= n; i++)
+{              
+    sum = n1 + n2;
+    n1 = n2;
+    n2 = sum;
+    Debug.WriteLineIf(sum == 1, $"sum is 1, n1 is {n1}, n2 is {n2}");  
+}
+```
+
+Ejecute la aplicación y verá la siguiente salida:
+
+**Resultados**
+
+```
+Entering Fibonacci method
+We are looking for the 5th number
+sum is 1, n1 is 1, n2 is 1
+```
+
+### Comprobación de condiciones con Assert
+
+En algunas situaciones, puede que quiera detener toda la aplicación en ejecución cuando no se cumpla una determinada condición. Mediante el uso de `Debug.Assert`, puede comprobar una condición y generar información adicional sobre el estado de la aplicación. Vamos a agregar una comprobación justo antes de la instrucción "return" para tener la seguridad de que n2 es 5.
+
+**C#**
+
+```
+// If n2 is 5 continue, else break.
+Debug.Assert(n2 == 5, "The return value is not 5 and it should be.");
+return n == 0 ? n1 : n2;
+```
+
+La lógica de la aplicación ya es correcta, así que vamos a actualizar `Fibonacci(5);` a `Fibonacci(6);`, lo que tendrá un resultado diferente.
+
+Depure la aplicación. Cuando se ejecuta `Debug.Assert` en el código, el depurador detiene la aplicación para que pueda inspeccionar las variables, la ventana de inspección, la pila de llamadas, etc. También envía el mensaje a la consola de depuración.
+
+**Resultados**
+
+```
+---- DEBUG ASSERTION FAILED ----
+---- Assert Short Message ----
+The return value is not 5 and it should be.
+---- Assert Long Message ----
+
+   at Program.<<Main>$>g__Fibonacci|0_0(Int32 n) in C:\Users\Jon\Desktop\DotNetDebugging\Program.cs:line 23
+   at Program.<Main>$(String[] args) in C:\Users\Jon\Desktop\DotNetDebugging\Program.cs:line 3
+```
+
+Detenga la depuración y, luego, ejecute la aplicación sin depurar escribiendo el siguiente comando en el terminal:
+
+**Bash**
+
+```
+dotnet run
+```
+
+La aplicación finaliza después de producirse un error en la aserción y registrarse la información en la salida de la aplicación.
+
+**Resultados**
+
+```
+Process terminated. Assertion failed.
+The return value is not 5 and it should be.
+   at Program.<<Main>$>g__Fibonacci|0_0(Int32 n) in C:\Users\Jon\Desktop\DotNetDebugging\Program.cs:line 23
+   at Program.<Main>$(String[] args) in C:\Users\Jon\Desktop\DotNetDebugging\Program.cs:line 3
+```
+
+Ahora, vamos a ejecutar la aplicación en la configuración `Release` con el siguiente comando en el terminal:
+
+**Bash**
+
+```
+dotnet run --configuration Release
+```
+
+La aplicación se ejecuta correctamente hasta su finalización, porque ya no estamos en la configuración `Debug`.
+
+Enhorabuena, ha depurado de forma correcta y eficaz el código mediante las características de .NET, como `Debug.WriteLine` y `Debug.Assert`. Buen trabajo.
+
+### Prueba de conocimientos
+
+#### Comprobación de conocimientos
+
+**1.** Si quisiera escribir una línea en la consola de depuración únicamente al depurar, ¿qué API debería usar?
+
+* [ ] System.Console.WriteLine
+* [ ] System.Diagnostics.Trace.WriteLine
+* [ ] System.Diagnostics.Debug.WriteLine
+* [ ] System.WriteLine
+
+**2.** Si quisiera escribir un mensaje de depuración solo cuando el recuento sea `0`, ¿qué código usaría?
+
+* [ ] `Debug.Assert(count != 0, "Count should not be 0.");`
+* [ ] `Debug.Assert(count == 0, "Count should not be 0.");`
+* [ ] `Debug.WriteIf(count != 0, "Count should not be 0.");`
+* [ ] `Debug.WriteIf(count == 0, "Count should not be 0.");`
+
+**3.** ¿Cuáles son los dos valores principales que proporciona un depurador?
+
+* [ ] Control de la ejecución del programa y observación del estado del programa
+* [ ] Modificación de los valores y la salida del programa
+* [ ] Observación del estado del programa y modificación de sus valores
+* [ ] Edición del programa durante la ejecución y de los valores del programa
+
+**4.** ¿Qué panel del depurador de Visual Studio Code es más útil para observar el valor actual de una variable específica en distintas funciones?
+
+* [ ] Usar el panel de variables, ya que en él se muestran todas las variables que están actualmente en el ámbito.
+* [ ] Mantener el puntero sobre la variable en el editor de código para mostrar el valor.
+* [ ] Usar el panel de inspección para seleccionar variables o expresiones específicas que se van a inspeccionar durante la ejecución del programa.
+* [ ] Usar el panel de la pila de llamadas.
+
+### Resumen
+
+Como desarrollador, lo más probable es que le interese pasar la mayor parte del tiempo codificando características nuevas, pero la detección y la corrección de errores a menudo interrumpirán esta tarea. Como ya ha experimentado, el uso de depuradores puede ser una estrategia eficaz para depurar los problemas de programas de .NET. Tanto con el depurador integrado para sesiones rápidas como con el de Visual Studio Code para proyectos más complejos, ha aprendido a localizar y corregir estos errores. Ha obtenido información sobre cómo hacerlo incluso sin conocer de antemano el código que se va a depurar.
+
+En este módulo, ha aprendido a:
+
+* Usar el depurador de Visual Studio Code con un programa .NET.
+* Crear puntos de interrupción y ejecutar el código paso a paso para detectar problemas
+* Inspeccionar el estado del programa en cualquier paso de ejecución
+* Analizar la pila de llamadas para buscar el origen de una excepción
+
+#### Pasos siguientes
+
+Continúe aprendiendo más sobre la depuración de .NET con:
+
+* [Depuración con Visual Studio Code](https://code.visualstudio.com/docs/editor/debugging)
+* [Uso de C# en Visual Studio Code](https://code.visualstudio.com/Docs/languages/csharp)
+* [Tutorial: Depuración de una aplicación de consola de .NET Core con Visual Studio Code](https://learn.microsoft.com/es-es/dotnet/core/tutorials/debugging-with-visual-studio-code)
+* [Tutorial: Depuración de una aplicación de consola de .NET Core con Visual Studio](https://learn.microsoft.com/es-es/dotnet/core/tutorials/debugging-with-visual-studio)
+* [Tutorial: Depuración de una aplicación de consola de .NET Core con Visual Studio para Mac](https://learn.microsoft.com/es-es/dotnet/core/tutorials/debugging-with-visual-studio-mac)
