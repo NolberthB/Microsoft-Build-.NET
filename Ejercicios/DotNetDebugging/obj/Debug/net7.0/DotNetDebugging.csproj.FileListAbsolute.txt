@@ -1,0 +1,15 @@
+/home/nolberthb/dev/cursos/Microsoft-Build-.NET/Ejercicios/DotNetDebugging/bin/Debug/net7.0/DotNetDebugging
+/home/nolberthb/dev/cursos/Microsoft-Build-.NET/Ejercicios/DotNetDebugging/bin/Debug/net7.0/DotNetDebugging.deps.json
+/home/nolberthb/dev/cursos/Microsoft-Build-.NET/Ejercicios/DotNetDebugging/bin/Debug/net7.0/DotNetDebugging.runtimeconfig.json
+/home/nolberthb/dev/cursos/Microsoft-Build-.NET/Ejercicios/DotNetDebugging/bin/Debug/net7.0/DotNetDebugging.dll
+/home/nolberthb/dev/cursos/Microsoft-Build-.NET/Ejercicios/DotNetDebugging/bin/Debug/net7.0/DotNetDebugging.pdb
+/home/nolberthb/dev/cursos/Microsoft-Build-.NET/Ejercicios/DotNetDebugging/obj/Debug/net7.0/DotNetDebugging.csproj.AssemblyReference.cache
+/home/nolberthb/dev/cursos/Microsoft-Build-.NET/Ejercicios/DotNetDebugging/obj/Debug/net7.0/DotNetDebugging.GeneratedMSBuildEditorConfig.editorconfig
+/home/nolberthb/dev/cursos/Microsoft-Build-.NET/Ejercicios/DotNetDebugging/obj/Debug/net7.0/DotNetDebugging.AssemblyInfoInputs.cache
+/home/nolberthb/dev/cursos/Microsoft-Build-.NET/Ejercicios/DotNetDebugging/obj/Debug/net7.0/DotNetDebugging.AssemblyInfo.cs
+/home/nolberthb/dev/cursos/Microsoft-Build-.NET/Ejercicios/DotNetDebugging/obj/Debug/net7.0/DotNetDebugging.csproj.CoreCompileInputs.cache
+/home/nolberthb/dev/cursos/Microsoft-Build-.NET/Ejercicios/DotNetDebugging/obj/Debug/net7.0/DotNetDebugging.dll
+/home/nolberthb/dev/cursos/Microsoft-Build-.NET/Ejercicios/DotNetDebugging/obj/Debug/net7.0/refint/DotNetDebugging.dll
+/home/nolberthb/dev/cursos/Microsoft-Build-.NET/Ejercicios/DotNetDebugging/obj/Debug/net7.0/DotNetDebugging.pdb
+/home/nolberthb/dev/cursos/Microsoft-Build-.NET/Ejercicios/DotNetDebugging/obj/Debug/net7.0/DotNetDebugging.genruntimeconfig.cache
+/home/nolberthb/dev/cursos/Microsoft-Build-.NET/Ejercicios/DotNetDebugging/obj/Debug/net7.0/ref/DotNetDebugging.dll
