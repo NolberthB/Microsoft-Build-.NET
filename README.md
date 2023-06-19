@@ -3800,3 +3800,604 @@ Si no es un usuario con licencia (de pago) de Visual Studio, descargue la  *edic
 Si quiere empezar a usar una interfaz de línea de comandos, descargue e instale el [SDK de .NET](https://dotnet.microsoft.com/download) y [Visual Studio Code](https://code.visualstudio.com/).
 
 Por último, si necesita obtener más información sobre C# antes de continuar, consulte la ruta de aprendizaje [Primeros pasos con C#](https://learn.microsoft.com/es-es/training/paths/get-started-c-sharp-part-1/).
+
+## Creación de un proyecto de .NET y trabajo con dependencias
+
+Use las dependencias del registro de NuGet para desarrollar más rápido aplicaciones de .NET. Obtenga información sobre cómo administrar las dependencias del proyecto.
+
+### Introducción
+
+Cuando trabaja en una aplicación, escribe código para cumplir los requisitos empresariales. Por motivos de velocidad y confiabilidad, usted y el equipo no escribirán todo el código por su cuenta, Recurrirá a código externo, es decir, bibliotecas escritas por otra persona.
+
+Una manera de enfocar la compilación de la aplicación con bibliotecas externas consiste en usar las bibliotecas existentes de las que puede realizar descargas y, posiblemente, pueda ampliar. Mediante el uso de estas bibliotecas, podrá acabar de compilar la aplicación antes y comercializarla mucho antes que la competencia. Otra ventaja de usar bibliotecas puede ser para garantizar que la aplicación siga los procedimientos recomendados para la autenticación y la autorización. Al fin y al cabo, la protección de los datos propios y los de los clientes es un aspecto muy importante.
+
+En este módulo, usará la herramienta de línea de comandos de .NET y el registro de paquetes NuGet para agregar bibliotecas al código de la aplicación. También aprenderá a administrar actualizaciones y mitigar problemas.
+
+### Objetivos de aprendizaje
+
+Después de completar este módulo, podrá:
+
+* Inicializar proyectos de .NET.
+* Agregar y eliminar paquetes de un proyecto de .NET.
+* Administrar las dependencias de paquete y actualizarlas de forma predecible.
+
+### Requisitos previos
+
+* Instalaciones locales del [SDK de .NET](https://dotnet.microsoft.com/download) y [Visual Studio Code](https://code.visualstudio.com/)
+* [Extensión de C#](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) para Visual Studio Code
+* Experiencia con el uso de la línea de comandos
+
+### Incorporación de paquetes al proyecto de .NET
+
+.NET incluye muchas bibliotecas principales que lo controlan todo, desde la administración de archivos y HTTP hasta la compresión de archivos. Existe un ecosistema enorme de bibliotecas de terceros. Puede usar NuGet, el administrador de paquetes de .NET, para instalar estas bibliotecas y usarlas en la aplicación.
+
+En .NET y en su ecosistema se usa mucho la palabra  *dependencia* . Una dependencia de paquete es una biblioteca de terceros. Se trata de un fragmento de código reutilizable que lleva a cabo una tarea y se puede agregar a la aplicación. La biblioteca de terceros es algo de lo que la aplicación *depende* para funcionar, de ahí la palabra  *dependencia* .
+
+Puede considerar la biblioteca de terceros como un paquete y se almacena en un repositorio. Un paquete consta de una o varias bibliotecas que se pueden agregar a la aplicación para aprovechar sus características.
+
+Nos centraremos en las dependencias de paquetes. Un proyecto de .NET puede tener otros tipos de dependencias, como marcos de trabajo, analizadores, referencias de proyecto y dependencias de proyecto compartidas, junto con dependencias de paquetes.
+
+### Determinación de la necesidad de un paquete
+
+¿Cómo puede saber si necesita un paquete para el proyecto? Esta es una pregunta complicada que implica varios factores:
+
+* **Obtención de código mejor** : Pregúntese si se trata de un área como la seguridad, por ejemplo, y si intenta implementar la autenticación y la autorización. Es muy importante *tenerlo claro* para proteger los datos personales y los de los clientes. Muchos desarrolladores usan los patrones estándar y las bibliotecas que están disponibles. Estas bibliotecas implementan características que probablemente siempre necesitará y los problemas se corrigen a medida que se producen. Debería usar estas bibliotecas en lugar de crear una propia. Probablemente no escriba el código tan bien personalmente, ya que hay muchos casos extremos que debería tener en cuenta.
+* **Ahorro de tiempo** : Probablemente pueda compilar por su cuenta la mayoría de los elementos, como bibliotecas de utilidades o de componentes de interfaz de usuario, pero esto lleva tiempo. Aunque el resultado es comparable a lo que ya está disponible, no vale la pena perder tiempo en replicar el trabajo de escribir este código si no tiene que hacerlo.
+* **Mantenimiento** : tarde o temprano, debe realizarse un mantenimiento de todas las bibliotecas y aplicaciones. El mantenimiento implica agregar nuevas características y corregir errores. ¿El mantenimiento de una biblioteca es un uso correcto de su tiempo o el de su equipo? ¿O es mejor permitir que un equipo de software de código abierto lo controle?
+
+### Evaluación de un paquete
+
+Antes de instalar una biblioteca, es posible que le interese inspeccionar las dependencias en las que se basa. Estas dependencias pueden animarlo a usar el paquete, o bien podrían disuadirlo de hacerlo. Estos son algunos factores que tener en cuenta al seleccionar una dependencia para el proyecto:
+
+* **Tamaño** : El número de dependencias puede crear una superficie de memoria grande. Si dispone de ancho de banda limitado o tiene otras limitaciones de hardware, este factor puede suponer un problema.
+* **Licencias** : Debe asegurarse de que la licencia concedida para la biblioteca cubre el uso previsto, tanto si se trata de un uso comercial, personal o académico.
+* **Mantenimiento activo** : Si el paquete se basa en una dependencia que está en desuso o que no se ha actualizado desde hace mucho tiempo, puede ser un problema.
+
+Para obtener más información sobre un paquete antes de instalarlo, vaya a `https://www.nuget.org/packages/<package name>`. Esta dirección URL le llevará a una página con los detalles del paquete. Seleccione la lista desplegable **Dependencias** para ver de qué paquetes depende para funcionar.
+
+Puede que el número de dependencias mostradas no sea del todo ilustrativo. Si descarga un paquete, podría acabar con una dependencia de paquete que contiene docenas de paquetes. ¿A qué se debe? Cada paquete tiene una lista de dependencias. Para asegurarse de poder usar un paquete, todas las dependencias se rastrean y se descargan cuando se ejecuta el comando `dotnet add package <package name>`.
+
+### Instalación de un paquete
+
+Hay varias maneras de instalar paquetes. Visual Studio y Visual Studio para Mac tienen integrada una interfaz de usuario gráfica y una línea de comandos para un administrador de paquetes. Puede agregar manualmente referencias de paquetes al archivo de proyecto o puede instalarlas a través de una herramienta de interfaz de línea de comandos (CLI), como Paket o la CLI de .NET Core.
+
+En este módulo, vamos a usar la CLI de .NET Core integrada para instalar paquetes. Puede agregar un paquete al proyecto de .NET mediante la invocación de un comando en el terminal. Un comando de instalación típico es similar a este: `dotnet add package <name of package>`. Al ejecutar el comando `add package`, la herramienta de línea de comandos se conecta a un registro global, captura el código y lo almacena en una ubicación de carpeta en la memoria caché que puedan usar todos los proyectos.
+
+Después de que el proyecto se instale y se compile, se agregan las referencias a las carpetas Debug o Release. El directorio del proyecto tendrá un aspecto similar a este:
+
+**Bash**
+
+```
+-| bin/
+---| Debug/
+------| net3.1
+--------| <files included in the dependency>
+```
+
+### Búsqueda de un paquete
+
+Es posible que desarrolladores individuales usen el registro global de NuGet.org para buscar y descargar los paquetes que necesitan para sus aplicaciones. Es posible que una empresa aplique una estrategia para saber qué paquetes se pueden usar y dónde buscarlos.
+
+![Captura de pantalla de NuGet.org en la que se muestra una lista de paquetes populares.](https://learn.microsoft.com/es-es/training/modules/dotnet-dependencies/media/finding-nuget.png)
+
+Los paquetes se podrían encontrar en muchos lugares diferentes. Algunos de estos orígenes podrían estar disponibles públicamente, mientras que otros tal vez estén restringidos y solo estén disponibles para los empleados de una empresa específica. Estos son algunos lugares donde podrían estar los paquetes:
+
+* **Registros** : Un ejemplo podría ser un registro global, como el de NuGet.org. Puede hospedar registros propios, ya sean privados o públicos. Hay registros privados disponibles a través de servicios como GitHub y Azure DevOps.
+* **Archivos** : Puede instalar un paquete desde una carpeta local. La instalación desde un paquete es habitual cuando se intentan desarrollar bibliotecas propias de .NET y se quiere probar el paquete de forma local, o bien cuando no se quiere usar un registro por el motivo que sea.
+
+![Diagrama en el que se ilustra la relación entre los creadores, los hosts y los consumidores de paquetes.](https://learn.microsoft.com/es-es/training/modules/dotnet-dependencies/media/nuget-roles.png)
+
+### Registro de NuGet y herramienta dotnet
+
+Al ejecutar `dotnet add package <name of dependency>`, .NET va a un registro global, denominado registro de NuGet.org, y busca el código que se va a descargar. Se encuentra en `https://nuget.org`. También puede buscar paquetes en esta página si accede a ella con un explorador. Cada paquete tiene un sitio web dedicado que puede visitar.
+
+![Captura de pantalla de la página de aterrizaje de un paquete NuGet.](https://learn.microsoft.com/es-es/training/modules/dotnet-dependencies/media/nuget-info.png)
+
+En estos sitios, puede obtener más información sobre dónde reside el código fuente. También puede encontrar información como las métricas de las descargas e información sobre el mantenimiento.
+
+![Captura de pantalla con información y métricas de un paquete NuGet.](https://learn.microsoft.com/es-es/training/modules/dotnet-dependencies/media/nuget-downloads.png)
+
+### Comandos .NET
+
+Hasta ahora, ha obtenido información sobre cómo puede instalar dependencias con la CLI de .NET Core. Pero esta herramienta puede hacer mucho más.
+
+La CLI de .NET Core tiene bastantes comandos. Los comandos le ayudan con tareas como la instalación o la creación de paquetes, y la inicialización de proyectos de .NET. No es necesario conocer todos los comandos en detalle. Cuando empiece a usar .NET, es probable que emplee solo un subconjunto de los comandos. A medida que aumente el uso de .NET, es posible que cada vez use más comandos de diversas categorías.
+
+Para ayudarle a recordar qué hacen los comandos, puede considerarlos como pertenecientes a categorías:
+
+* **Administración de dependencias** : Los comandos de esta categoría cubren la instalación, eliminación, limpieza después de las instalaciones de paquetes y la actualización de paquetes.
+* **Ejecución de programas** : La herramienta de .NET Core puede ayudarle a administrar flujos en el desarrollo de la aplicación. Como ejemplos de flujos de aplicación podrían citarse la ejecución de pruebas, la compilación de código y la ejecución de comandos de migración para actualizar proyectos.
+* **Creación y publicación de paquetes** : Hay varios comandos que pueden ayudarle con tareas como la creación de un paquete comprimido y su inserción en un registro.
+
+Si quiere obtener una lista detallada de todos los comandos, escriba `dotnet --help` en el terminal.
+
+### Procedimiento para instalar un paquete
+
+Use el comando `dotnet add package <dependency name>` para instalar una dependencia normal diseñada para usarse como parte de la aplicación.
+
+ Nota
+
+Puede instalar algunos paquetes  *globalmente* . Estos paquetes no están pensados para importarse en el proyecto. Por este motivo, muchos paquetes globales son herramientas de la CLI o plantillas. También puede instalar estas herramientas globales desde un repositorio de paquetes. Instale las herramientas con el comando `dotnet tool install <name of package>`. Instale las plantillas con el comando `dotnet new -i <name of package>`.
+
+### Después de la instalación
+
+Los paquetes instalados se indican en la sección `dependencies` del archivo .csproj. Si quiere ver qué paquetes hay en la carpeta, puede escribir `dotnet list package`.
+
+**Resultados**
+
+```
+Project 'DotNetDependencies' has the following package references
+   [net5.0]:
+   Top-level Package      Requested   Resolved
+   > Humanizer            2.7.9       2.7.9
+```
+
+Este comando solo muestra los paquetes de nivel superior, no las dependencias de dichos paquetes que denominamos  *transitivos* . Esto es muy útil para una vista rápida. Si desea una vista más detallada, puede enumerar todos los paquetes transitivos. Al hacerlo, el comando `list` tiene el aspecto siguiente:
+
+**CLI de .NET**
+
+```
+dotnet list package --include-transitive
+```
+
+La inclusión de los transitivos le permitirá ver las dependencias junto con todos los paquetes que haya instalado. Si ejecuta `dotnet list package --include-transitive`, es posible que obtenga este resultado:
+
+**Resultados**
+
+```
+Project 'DotNetDependencies' has the following package references
+   [net5.0]:
+   Top-level Package      Requested   Resolved
+   > Humanizer            2.7.9       2.7.9
+
+   Transitive Package               Resolved
+   > Humanizer.Core                 2.7.9
+   > Humanizer.Core.af              2.7.9
+   > Humanizer.Core.ar              2.7.9
+   > Humanizer.Core.bg              2.7.9
+   > Humanizer.Core.bn-BD           2.7.9
+   > Humanizer.Core.cs              2.7.9
+   ...
+```
+
+### Restauración de dependencias
+
+Al crear o clonar un proyecto, las dependencias incluidas no se descargan ni se instalan hasta que se compila el proyecto. Mediante la ejecución del comando `dotnet restore`, puede restaurar manualmente las dependencias y las herramientas específicas del proyecto que se especifican en el archivo de proyecto. En la mayoría de los casos, no es necesario usar explícitamente el comando. La restauración de NuGet se ejecuta implícitamente, si es necesario, cuando se ejecutan comandos como `new`, `build` y `run`.
+
+### Limpieza de las dependencias
+
+Tarde o temprano, es probable que se dé cuenta de que ya no necesita un paquete, o es posible que se dé cuenta de que el paquete que instaló no es el que necesita. Puede que haya encontrado uno que realizará mejor una tarea. Sea cual sea el motivo, debe quitar las dependencias que no use. Al hacerlo, todo se mantiene limpio. Además, las dependencias ocupan espacio.
+
+Para quitar un paquete del proyecto, use el comando `remove` de la siguiente manera: `dotnet remove package <name of dependency>`. Este comando quitará el paquete del archivo .csproj del proyecto.
+
+### Ejercicio: Instalación de paquetes
+
+Los desarrolladores de Tailwind Traders asumen que están a punto de invertir una gran cantidad de recursos en el desarrollo de aplicaciones para la plataforma .NET. Estas aplicaciones mostrarán muchos datos legibles para los usuarios, como fechas, horas y números.
+
+.NET tiene funciones para hacerlo, pero los desarrolladores están seguros de que alguien ya habrá resuelto este problema. Necesitan un marco. Tras realizar una búsqueda, han encontrado Humanizer en el registro de paquetes NuGet. Por lo que ven, se usa ampliamente y promete cumplir todas sus necesidades relacionadas con .NET, como manipular y mostrar cadenas, enumeraciones, fechas, horas, intervalos, números y cantidades.
+
+En este punto, los desarrolladores desean que instale Humanizer, que escriba un par de manipulaciones de datos y que las ejecute para ver si Humanizer cumple las expectativas.
+
+ Nota
+
+En este módulo se usan la CLI (interfaz de la línea de comandos) de .NET y Visual Studio Code para el desarrollo local. Cuando complete este módulo, podrá aplicar los conceptos mediante Visual Studio (Windows), Visual Studio para Mac (macOS), o seguir con el desarrollo mediante Visual Studio Code (Windows, Linux y macOS).
+
+En este módulo se usa el SDK de .NET 6.0. Asegúrese de que tiene instalado .NET 6.0 mediante la ejecución del siguiente comando en el terminal que prefiera:
+
+**CLI de .NET**
+
+```
+dotnet --list-sdks
+```
+
+Verá un resultado similar al siguiente:
+
+**Consola**
+
+```
+3.1.100 [C:\program files\dotnet\sdk]
+5.0.100 [C:\program files\dotnet\sdk]
+6.0.100 [C:\program files\dotnet\sdk]
+```
+
+Asegúrese de que aparece una versión que comienza por `6`. Si no aparece ninguna o no se encuentra el comando, [instale el SDK más reciente de .NET 6.0](https://dotnet.microsoft.com/download).
+
+#### Creación de un proyecto de .NET de ejemplo
+
+Para configurar un proyecto de .NET para que funcione con dependencias, usaremos Visual Studio Code. Visual Studio Code incluye un terminal integrado que facilita la creación de un proyecto. Si no quiere usar otro editor de código, puede ejecutar los comandos de este módulo en un terminal.
+
+1. En Visual Studio Code, seleccione  **Archivo** > **Abrir carpeta** .
+2. Cree una carpeta denominada **DotNetDependencies** en la ubicación que prefiera y, después, seleccione  **Seleccionar carpeta** .
+3. Abra el terminal integrado desde Visual Studio Code; para ello, seleccione  **Ver** >**Terminal** en el menú principal.
+4. En la ventana del terminal, copie y pegue el siguiente comando.
+   **CLI de .NET**
+
+   ```
+   dotnet new console -f net6.0
+   ```
+
+   Este comando crea un archivo **Program.cs** en la carpeta con un programa "Hola mundo" básico que ya está escrito, junto con un archivo de proyecto de C# denominado  **DotNetDependencies.csproj** .
+
+   Ahora debería tener acceso a estos archivos.
+
+   **Bash**
+
+   ```
+   -| obj
+   -| DotNetDependencies.csproj
+   -| Program.cs
+   ```
+5. En la ventana del terminal, copie y pegue el siguiente comando para ejecutar el programa "Hola mundo".
+   **CLI de .NET**
+
+   ```
+   dotnet run
+   ```
+
+En la ventana del terminal se muestra "Hola mundo" como salida.
+
+![Captura de pantalla de Visual Studio Code con una nueva aplicación de consola.](https://learn.microsoft.com/es-es/training/modules/dotnet-dependencies/media/new-dotnet-project.png)
+
+#### Configuración de Visual Studio Code para la depuración de .NET
+
+Abra Program.cs. La primera vez que abra un archivo de C# en Visual Studio Code, recibirá un aviso para instalar las extensiones recomendadas para C#. Seleccione el botón **Instalar** en el mensaje.
+
+![Captura de pantalla del mensaje de extensiones recomendadas de Visual Studio Code.](https://learn.microsoft.com/es-es/training/modules/dotnet-dependencies/media/install-recommended-extensions.png)
+
+Visual Studio Code instala la extensión de C#. Muestra un aviso adicional para agregar los recursos necesarios para compilar y depurar el proyecto. Seleccione  **Sí** .
+
+![Captura de pantalla del mensaje de recursos necesarios de Visual Studio Code.](https://learn.microsoft.com/es-es/training/modules/dotnet-dependencies/media/install-required-assets.png)
+
+Puede cerrar la pestaña **Extensión: C#** para centrarse en el código que va a escribir.
+
+#### Adición de un paquete NuGet mediante la herramienta de .NET Core
+
+1. Abra  **Program.cs** . Debería ser parecido a este:
+   **C#**
+
+   ```
+   Console.WriteLine("Hello, World!");
+   ```
+
+   La función anterior se ejecuta al principio de la aplicación y genera una cadena en la consola. Vamos a agregar Humanizer y a manipular los datos y escribirlos en la consola.
+2. Ejecute el siguiente comando para instalar la biblioteca de Humanizer:
+   **CLI de .NET**
+
+   ```
+   dotnet add package Humanizer --version 2.7.9
+   ```
+
+   Abra el archivo **DotNetDependencies.csproj** y busque la sección `ItemGroup`. Ahora debería tener una entrada similar a la siguiente:
+
+   **XML**
+
+   ```
+   <ItemGroup>
+       <PackageReference Include="Humanizer" Version="2.7.9" />
+   </ItemGroup>
+   ```
+3. Agregue el siguiente contenido en la parte superior del archivo Program.cs para inicializar Humanizer:
+   **C#**
+
+   ```
+   using Humanizer;
+   ```
+
+   El archivo **Program.cs** ahora debería ser similar al siguiente:
+
+   **C#**
+
+   ```
+   using Humanizer;
+
+   Console.WriteLine("Hello, World!");
+   ```
+4. Agregue el contenido siguiente al archivo Program.cs en la parte inferior del archivo, debajo de `Console.WriteLine("Hello, World!");`:
+   **C#**
+
+   ```
+   static void HumanizeQuantities()
+   {
+       Console.WriteLine("case".ToQuantity(0));
+       Console.WriteLine("case".ToQuantity(1));
+       Console.WriteLine("case".ToQuantity(5));
+   }
+
+   static void HumanizeDates()
+   {
+       Console.WriteLine(DateTime.UtcNow.AddHours(-24).Humanize());
+       Console.WriteLine(DateTime.UtcNow.AddHours(-2).Humanize());
+       Console.WriteLine(TimeSpan.FromDays(1).Humanize());
+       Console.WriteLine(TimeSpan.FromDays(16).Humanize());
+   }
+   ```
+5. Reemplace `Console.WriteLine("Hello, World!");` por el código siguiente:
+   **C#**
+
+   ```
+   Console.WriteLine("Quantities:");
+   HumanizeQuantities();
+
+   Console.WriteLine("\nDate/Time Manipulation:");
+   HumanizeDates();
+   ```
+6. Guarde el archivo ( **Archivo** >**Guardar** o CTRL + S). Escriba el siguiente comando en el terminal para ejecutar la aplicación:
+   **CLI de .NET**
+
+   ```
+   dotnet run
+   ```
+
+   Debería obtener la siguiente salida:
+
+   **Resultados**
+
+   ```
+   Quantities:
+   0 cases
+   1 case
+   5 cases
+
+   Date/Time Manipulation:
+   yesterday
+   2 hours ago
+   1 day
+   2 weeks
+   ```
+
+¡Enhorabuena! Ha instalado correctamente Humanizer como una dependencia y ha escrito lógica para el código de la aplicación con el objetivo de que los datos sean más legibles. Parece que Humanizer está a la altura de las expectativas y que probablemente en Tailwind Traders estarán satisfechos con el resultado de esta evaluación.
+
+### Administración de actualizaciones de dependencias en el proyecto de .NET
+
+Tarde o temprano, querrá actualizar a una nueva versión de una biblioteca. Tal vez una función se haya marcado como en desuso o puede que haya una nueva característica en una versión posterior de un paquete que está usando.
+
+Tenga en cuenta estas consideraciones antes de intentar actualizar una biblioteca:
+
+* **El tipo de actualización** : ¿qué tipo de actualización está disponible? ¿Se trata de una pequeña corrección de errores? ¿Agrega una característica nueva que necesita? ¿Interrumpirá el código? Puede comunicar el tipo de actualización mediante un sistema denominado  *versionamiento semántico* . La manera en que se expresa el número de versión de la biblioteca indica al desarrollador el tipo de actualización con el que trata.
+* **Si el proyecto está configurado correctamente** : el proyecto de .NET se puede configurar de forma que solo obtenga los tipos de actualizaciones que le interesen. Solo se realizará una actualización si hay disponible un tipo de actualización específico. Este es el enfoque recomendado para evitar sorpresas.
+* **Problemas de seguridad** : la administración de las dependencias del proyecto a lo largo del tiempo conlleva tener en cuenta los problemas que puedan producirse. Por ejemplo, pueden surgir problemas cuando se detectan vulnerabilidades. Si todo va bien, se publicarán revisiones que se pueden descargar. La herramienta de .NET Core ayuda a ejecutar una *auditoría* en las bibliotecas para averiguar si tiene paquetes que se deban actualizar. También le ayuda a realizar las acciones adecuadas para solucionar un problema.
+
+#### Uso del versionamiento semántico
+
+Existe un estándar del sector denominado  *versionamiento semántico* . El versionamiento semántico es la forma de expresar el tipo de cambio que usted u otro desarrollador introducen en una biblioteca. El versionamiento semántico garantiza que un paquete tenga un número de versión dividido en estas secciones:
+
+* **Versión principal** : número situado más a la izquierda. Por ejemplo, es el 1 en 1.0.0. Un cambio en este número significa que puede esperar cambios importantes en el código. Es posible que tenga que volver a escribir parte del código.
+* **Versión secundaria** : número del medio. Por ejemplo, es el 2 en 1.2.0. Un cambio en este número significa que se han agregado características. El código debería seguir funcionando. Por lo general, es seguro aceptar la actualización.
+* **Versión de revisión** : número más a la derecha. Por ejemplo, es el 3 en 1.2.3. Un cambio en este número significa que se ha aplicado un cambio que corrige una parte del código que debería haber funcionado. Debería ser seguro aceptar la actualización.
+
+En esta tabla se muestra cómo cambia el número de versión de cada tipo de versión:
+
+| Tipo                  | ¿Qué sucede?       |
+| --------------------- | -------------------- |
+| Versión principal    | 1.0.0 cambia a 2.0.0 |
+| Versión secundaria   | 1.1.1 cambia a 1.2.0 |
+| Versión de revisión | 1.0.1 cambia a 1.0.2 |
+
+Muchas empresas y desarrolladores han adoptado este sistema. Si tiene previsto publicar paquetes e insertarlos en el registro de NuGet, se espera que siga el versionamiento semántico. Incluso si solo descarga paquetes del registro de NuGet, lo más probable es que sigan el versionamiento semántico.
+
+Los cambios en un paquete pueden presentar riesgos, como el hecho de que un error pueda perjudicar su negocio. Algunos riesgos podrían requerir que vuelva a escribir parte del código. La reescritura de código lleva tiempo y cuesta dinero.
+
+#### Enfoque de actualización
+
+Como desarrollador de .NET, puede comunicar a .NET el comportamiento de actualización de su preferencia. Piense en la actualización en términos del riesgo. Estos son algunos enfoques:
+
+* **Versión principal** : estoy de acuerdo con la actualización a la versión principal más reciente en cuanto se publique. Acepto el hecho de que es posible que tenga que cambiar el código.
+* **Versión secundaria** : me parece bien que se incorpore una característica nueva. No me gusta que el código se interrumpa.
+* **Versión de revisión** : las únicas actualizaciones que me interesan son las correcciones de errores.
+
+Si va a administrar un proyecto de .NET nuevo o más pequeño, puede permitirse cierta flexibilidad en el modo de definir la estrategia de actualización. Por ejemplo, siempre puede actualizar a la última versión. En el caso de proyectos más complejos, existen más matices, pero se describirán en un módulo futuro.
+
+Por lo general, cuanto menor sea la dependencia que se va a actualizar, menos dependencias tendrá y más probabilidades de que el proceso de actualización sea fácil.
+
+#### Configuración del archivo de proyecto para la actualización
+
+Al agregar una o varias dependencias, piense en configurar el archivo del proyecto de modo que obtenga un comportamiento predecible al restaurar, compilar o ejecutar el proyecto. Puede comunicar el enfoque que quiere adoptar para un paquete. NuGet tiene los conceptos de intervalos de versiones y versiones flotantes.
+
+Veamos primero los intervalos de versiones. Se trata de una notación especial que se usa para especificar intervalos de versiones concretos que quiere que se resuelvan.
+
+| Notación | Regla aplicada  | Descripción                                                    |
+| --------- | --------------- | --------------------------------------------------------------- |
+| 1.0       | x >= 1.0        | Versión mínima, incluida                                      |
+| (1.0,)    | x > 1.0         | Versión mínima, excluida                                      |
+| [1.0]     | x == 1.0        | Coincidencia de versión exacta                                 |
+| (,1.0]    | x ≤ 1.0        | Versión máxima, incluida                                      |
+| (,1.0)    | x < 1.0         | Versión máxima, excluida                                      |
+| [1.0,2.0] | 1.0 ≤ x ≤ 2.0 | Intervalo exacto, ambos incluidos                               |
+| (1.0,2.0) | 1.0 < x < 2.0   | Intervalo exacto, ambos excluidos                               |
+| [1.0,2.0) | 1.0 ≤ x < 2.0  | Versión mínima incluida y versión máxima excluida mezcladas |
+| (1.0)     | no válido      | no válido                                                      |
+
+NuGet también admite el uso de una notación de versión flotante para las partes de sufijo de versión principal, secundaria, de revisión y versión preliminar del número. Esta notación es un asterisco (*). Por ejemplo, la especificación de la versión 6.0.* indica "use la versión 6.0.x más reciente". En otro ejemplo, 4.* significa "use la versión 4.x más reciente". El uso de una versión flotante reduce los cambios en el archivo del proyecto, a la vez que se mantiene al día con la última versión de una dependencia.
+
+ Nota
+
+Se recomienda instalar una versión específica, en lugar de usar cualquiera de las notaciones flotantes. Instalar una versión específica garantiza que las compilaciones se puedan repetir, a menos que se solicite explícitamente una actualización de una dependencia.
+
+Cuando se usa una versión flotante, NuGet resuelve la última versión de un paquete que coincide con el patrón de versión. En el ejemplo siguiente, 6.0.* obtiene la última versión de un paquete que empieza por 6.0. Esa versión es 6.0.1.
+
+![Captura de pantalla de la elección de la última versión cuando se solicita una versión flotante.](https://learn.microsoft.com/es-es/training/modules/dotnet-dependencies/media/floating-version.png)
+
+Estos son algunos ejemplos que se pueden configurar para la versión principal, secundaria o de revisión:
+
+**XML**
+
+```
+<!-- Accepts any version 6.1 and later. -->
+<PackageReference Include="ExamplePackage" Version="6.1" />
+
+<!-- Accepts any 6.x.y version. -->
+<PackageReference Include="ExamplePackage" Version="6.*" />
+<PackageReference Include="ExamplePackage" Version="[6,7)" />
+
+<!-- Accepts any later version, but not including 4.1.3. Could be
+     used to guarantee a dependency with a specific bug fix. -->
+<PackageReference Include="ExamplePackage" Version="(4.1.3,)" />
+
+<!-- Accepts any version earlier than 5.x, which might be used to prevent pulling in a later
+     version of a dependency that changed its interface. However, we don't recommend this form because determining the earliest version can be difficult. -->
+<PackageReference Include="ExamplePackage" Version="(,5.0)" />
+
+<!-- Accepts any 1.x or 2.x version, but not 0.x or 3.x and later. -->
+<PackageReference Include="ExamplePackage" Version="[1,3)" />
+
+<!-- Accepts 1.3.2 up to 1.4.x, but not 1.5 and later. -->
+<PackageReference Include="ExamplePackage" Version="[1.3.2,1.5)" />
+```
+
+#### Búsqueda y actualización de paquetes obsoletos
+
+El comando `dotnet list package --outdated` muestra los paquetes obsoletos. Este comando puede ayudarle a aprender cuándo hay disponibles versiones más recientes de los paquetes. Esta es una salida típica del comando:
+
+**Resultados**
+
+```
+Top-level Package      Requested   Resolved   Latest
+> Humanizer            2.7.*       2.7.9      2.8.26
+```
+
+Estos son los significados de los nombres de las columnas en la salida:
+
+* `Requested`: versión o intervalo de versiones que ha especificado.
+* `Resolved`: versión real que se ha descargado para el proyecto que coincide con la versión especificada.
+* `Latest`: versión más reciente disponible para la actualización desde NuGet.
+
+El flujo de trabajo recomendado es ejecutar los siguientes comandos, en este orden:
+
+1. Ejecute `dotnet list package --outdated`. Este comando enumera todos los paquetes obsoletos. Proporciona información en las columnas `Requested`, `Resolved` y `Latest`.
+2. Ejecute `dotnet add package <package name>`. Si ejecuta este comando, se intentará actualizar a la última versión. Opcionalmente, puede pasar `--version=<version number/range>`.
+
+### Ejercicio: Administración de actualizaciones de dependencias en el proyecto de .NET
+
+Las dependencias que se usan en las aplicaciones se pueden actualizar con frecuencia y pueden contener nuevas características, correcciones de errores y actualizaciones de seguridad críticas. La aplicación que ha creado es pequeña y solo tiene una dependencia. Debería ser fácil actualizarla. Vea si puede actualizar la aplicación para aprovechar las características más recientes.
+
+#### Actualización de las dependencias de la aplicación
+
+1. En el archivo  **DotNetDependencies.csproj** , observe `dependencies`. Debería ser similar a este código:
+   **XML**
+
+   ```
+   <ItemGroup>
+       <PackageReference Include="Humanizer" Version="2.7.9" />
+   </ItemGroup>
+   ```
+2. Para ver las dependencias instaladas, ejecute este comando:
+   **CLI de .NET**
+
+   ```
+   dotnet list package
+   ```
+
+   Esto debería generar la versión solicitada y la versión final resuelta (es decir, instalada).
+
+   **Resultados**
+
+   ```
+   Top-level Package      Requested   Resolved
+   > Humanizer            2.7.9        2.7.9
+   ```
+3. Para ver qué dependencias están obsoletas, ejecute este comando:
+   **CLI de .NET**
+
+   ```
+   dotnet list package --outdated
+   ```
+
+   La salida debería ser similar a la siguiente. Es posible que obtenga otros valores en la columna `Latest`.
+
+   **Resultados**
+
+   ```
+   Project `DotNetDependencies` has the following updates to its packages
+      [net6.0]:
+      Top-level Package      Requested   Resolved   Latest
+      > Humanizer            2.7.9       2.7.9      2.11.10
+   ```
+
+   De forma predeterminada, este comando buscará la última versión estable. Para buscar paquetes de versión preliminar, anexe `--include-prerelease` al comando anterior:
+   **CLI de .NET**
+
+   ```
+   dotnet list package --outdated --include-prerelease
+   ```
+4. Puede actualizar a la versión `Latest`, con cierto nivel de confianza. De este modo, se asegurará de que las dependencias obtengan las características y revisiones más recientes de esa versión principal. Para instalar la versión más reciente, ejecute el siguiente comando:
+   **CLI de .NET**
+
+   ```
+   dotnet add package Humanizer 
+   ```
+
+   Debería obtener una salida similar a la siguiente:
+
+   **Resultados**
+
+   ```
+   info : PackageReference for package 'Humanizer' version '2.11.10' updated in file 'C:\Users\username\Desktop\DotNetDependencies\DotNetDependencies.csproj'.
+   ```
+
+   En la salida se indica que las dependencias del proyecto se han actualizado.
+   Si quiere actualizar a una versión específica de la dependencia, puede anexar el parámetro `--version` e indicar la versión concreta.
+   **CLI de .NET**
+
+   ```
+   dotnet add package Humanizer --version 2.11.10
+   ```
+
+   Por último, también puede instalar el paquete de versión preliminar más reciente. Para ello, anexe el parámetro `--prerelease`.
+   **CLI de .NET**
+
+   ```
+   dotnet add package Humanizer --prerelease
+   ```
+
+   Es posible que los resultados sean ligeramente distintos. La versión indicada debe corresponderse con la última versión disponible del paquete.
+
+¡Enhorabuena! Ha actualizado la dependencia de la aplicación. Buen trabajo.
+
+### Prueba de conocimientos
+
+Elija la mejor respuesta para cada pregunta y, después, seleccione  **Comprobar las respuestas** .
+
+#### Comprobación de conocimientos
+
+**1.** ¿Cómo se instala un marco como Humanizer?
+
+* [ ] Ejecute `dotnet add Humanizer`:
+* [ ] Ejecute `dotnet add package Humanizer`:
+* [ ] Mediante la ejecución de `dotnet install Humanizer`.
+* [ ] Mediante la ejecución de `dotnet download package Humanizer`.
+
+**2.** ¿Qué cambio de versión indicaría una versión secundaria cuando un paquete usa la versión semántica?
+
+* [ ] 1.1.1 cambia a 1.2.0
+* [ ] 1.0.1 cambia a 1.0.2
+* [ ] 1.0.0 cambia a 2.0.0
+
+**3.** ¿Cómo se configura un archivo de proyecto para que solo obtenga actualizaciones de revisión (corrección de errores)?
+
+* [ ] Se busca la entrada en el archivo de proyecto y se establece la entrada de modo que tenga el aspecto siguiente: `<PackageReference Include="<package>" Version="*"/>`.
+* [ ] Se busca la entrada en el archivo de proyecto y se establece la entrada de modo que tenga el aspecto siguiente: `<PackageReference Include="<package>" Version="2.*"/>`.
+* [ ] Se busca la entrada en el archivo de proyecto y se establece la entrada de modo que tenga el aspecto siguiente: `<PackageReference Include="<package>" Version="2.7.*"/>`.
+* [ ] Se busca la entrada en el archivo de proyecto y se establece la entrada de modo que tenga el aspecto siguiente: `<PackageReference Include="<package>" Version="[6,7)"/>`.
+
+**4.** ¿Cómo se comprueba si hay disponible una nueva versión de un marco?
+
+* [ ] Ejecute `dotnet list outdated`:
+* [ ] Ejecute `dotnet list package outdated`:
+* [ ] Ejecute `dotnet list --outdated`:
+* [ ] Ejecute `dotnet list package --outdated`:
+
+### Resumen
+
+En primer lugar, ha aprendido a instalar dependencias que la aplicación puede usar. El uso de dependencias en la aplicación le permite crear la aplicación más rápido porque el código ya está escrito. Además, es recomendable recurrir a bibliotecas probadas en lugar de escribir algo propio. El uso de estas bibliotecas es especialmente recomendable cuando se agrega autenticación y autorización a la aplicación.
+
+En este módulo se ha explicado cómo usar la CLI de .NET Core para instalar dependencias de manera local.
+
+Después, ha aprendido a actualizar las dependencias. Las dependencias se actualizan por varias razones en forma de correcciones de errores, características nuevas o cambios más grandes. En el archivo de proyecto, puede configurar los tipos de actualizaciones que le interesan por cada dependencia. Si trabaja en un entorno empresarial, se recomienda considerar cuidadosamente el enfoque relacionado con los tipos de actualizaciones que acepta.
+
+#### Recursos adicionales
+
+* Revise la [documentación de NuGet](https://learn.microsoft.com/es-es/nuget/) oficial.
+* Revise la [documentación oficial de la CLI de .NET](https://learn.microsoft.com/es-es/dotnet/core/tools/).
+* Examine los paquetes disponibles en [NuGet](https://www.nuget.org/).
+* Consulte el [sitio web de .NET](https://dot.net/) para informarse sobre todo lo relacionado con .NET.
+* Pruebe [Visual Studio Code](https://code.visualstudio.com/) para editar texto y archivos de código.
